@@ -1,0 +1,2 @@
+# lzsmgen
+State machine generator
