@@ -1,0 +1,12 @@
+-- Build script for state machine generator
+
+-- Distinguish between Windows and Linux by checking path separator
+LIBS = 'fltk'
+if package.config:sub(1,1) ~= '/' then
+    LIBS = {'fltk', 'ole32', 'gdi32', 'uuid', 'comctl32'}
+end
+
+cpp.program{'lzsmgen',
+    src = '.',
+    libs = LIBS
+}
