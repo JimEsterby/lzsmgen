@@ -40,8 +40,7 @@ In order to use the program, the user will need to have some expertise in the ta
 
 | **Term** | **Definition** |
 | --- | --- |
-| Reactive system | A system which continues to run indefinitely, responding to various
- events like button clicks, switch operations, and other condition changes. |
+| Reactive system | A system which continues to run indefinitely, responding to various events like button clicks, switch operations, and other condition changes. |
 | Target language | Language that the system will generate. |
 
 # 2 References
