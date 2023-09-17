@@ -1,7 +1,10 @@
 # Test Specification - State Machine Generator Application
 ## 1 Introduction
-
+### 1.1 Purpose
 This document is intended to elaborate the verification/validation of the application.
+### 1.2 Architecture
+The application is divided into the standard model-view-controller design pattern. System tests and user acceptance tests involve 2 or more of the model, view, or controller entities. Unit tests check 1 or part of 1 entity.
+
 ---
 ## 2 Test Cases
 | Test Case 1 | |
@@ -92,6 +95,97 @@ The window disappears from the screen.
 
 ---
 
+| Test Case 7 | |
+| --- | --- |
+| Brief description | Check palette selection. |
+| Reason for test | Ensure new selection appears in edit section. |
+| Type | **Unit** |
+| Map to user story | [KAN-12 Add component](https://jde-psu.atlassian.net/browse/KAN-12) |
+#### Steps
+Select component with mouse.
+#### Expected results
+Component appears in edit section.
+
+---
+
+| Test Case 8 | |
+| --- | --- |
+| Brief description | Check palette selection. |
+| Reason for test | Ensure new selection communication to model. |
+| Type | **System** |
+| Map to user story | [KAN-12 Add component](https://jde-psu.atlassian.net/browse/KAN-12) |
+#### Steps
+Select component with mouse.
+#### Expected results
+Component appears in edit section and data is updated in the model. TODO: How is data to be checked in the model?
+
+---
+
+| Test Case 9 | |
+| --- | --- |
+| Brief description | A "create" action is cancelled. |
+| Reason for test | Check response of system to cancelling a "create" action. |
+| Type | **System** |
+| Map to user story | [KAN-11 Create diagram](https://jde-psu.atlassian.net/browse/KAN-11) |
+#### Steps
+1. Add one or more components to the edit area by clicking on components in the palette area.
+2. Select "New" command from application menu.
+3. When a dialog appears, select "Cancel" on the dialog.
+#### Expected results
+1. Dialog appears after step 2.
+2. The dialog closes.
+3. The edit area remains as it was after step 1.
+4. Model data remains as it was after step 1.
+
+---
+
+| Test Case 10 | |
+| --- | --- |
+| Brief description | A "create" action is initiated despite unsaved changes. |
+| Reason for test | Check response of system to when the user elects to lose changes. |
+| Type | **System** |
+| Map to user story | [KAN-11 Create diagram](https://jde-psu.atlassian.net/browse/KAN-11) |
+#### Steps
+1. Add one or more components to the edit area by clicking on components in the palette area.
+2. Select "New" command from application menu.
+3. When a dialog appears, select "OK" or equivalent button on the dialog.
+#### Expected results
+1. Dialog appears after step 2.
+2. The dialog closes.
+3. The edit area clears.
+4. Model data is reset.
+
+---
+
+| Test Case 11 | |
+| --- | --- |
+| Brief description | A "create" action when the edit area is empty or the model data has been saved. |
+| Reason for test | Check expected use of the "create" action. |
+| Type | **System** |
+| Map to user story | [KAN-11 Create diagram](https://jde-psu.atlassian.net/browse/KAN-11) |
+#### Steps
+1. Leave the edit area blank and do not load a model.
+2. Select "New" command from application menu.
+#### Expected results
+No dialog appears.
+
+---
+
+| Test Case 12 | |
+| --- | --- |
+| Brief description | Create action |
+| Reason for test | Ensure that create action protects the user from losing data. |
+| Type | **User Acceptance** |
+| Map to user story | [KAN-11 Create diagram](https://jde-psu.atlassian.net/browse/KAN-11) |
+#### Steps
+Select the "New" command under a variety of conditions:
+1. Loaded model file with no unsaved changes
+2. Loaded model file with unsaved changes
+3. Empty edit area, etc.
+#### Expected results
+The program never loses changes, except by explicit command of the user.
+
+---
 
 
 
