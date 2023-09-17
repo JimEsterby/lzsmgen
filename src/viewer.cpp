@@ -1,25 +1,202 @@
 #include <FL/Fl.H>
+#include <FL/Fl_Group.H>
+#include <FL/Fl_Tile.H>
+#include <FL/fl_ask.H>
 #include "viewer.h"
 
-Viewer::Viewer()
+// Main application menu
+Fl_Menu_Item Viewer::mainMenu[] =
 {
-    {
-        topLevel = new Fl_Double_Window(360, 260, "State Machine Generator");
-        topLevel->user_data((void*)(this));
-        topLevel->end();
-    } // Fl_Double_Window* topLevel
+    { "&File", 0,  0, 0, (int)FL_SUBMENU, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
+    { "New", 0,  (Fl_Callback*)Viewer::cb_New, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
+    { "Open...", 0, 0, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
+    { "Save", 0, 0, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
+    { "Save as...", 0, 0, 0, (int)FL_MENU_DIVIDER, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
+    { "E&xit", 0, (Fl_Callback*)Viewer::cb_Exit, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
+    {0,0,0,0,0,0,0,0,0},
+    { "&Edit", 0, 0, 0, (int)FL_SUBMENU, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
+    { "Undo", FL_CTRL+'Z', 0, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
+    { "Redo", FL_CTRL+'Y', 0, 0, (int)FL_MENU_DIVIDER, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
+    { "Cut", FL_CTRL+'X', 0, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
+    { "Copy", FL_CTRL+'C', 0, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
+    { "Paste", FL_CTRL+'V', 0, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
+    {0,0,0,0,0,0,0,0,0},
+    { "Build", 0, 0, 0, (int)FL_SUBMENU, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
+    { "C-code", 0, 0, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
+    { "Image", 0, 0, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
+    {0,0,0,0,0,0,0,0,0},
+    { "&Help", 0, 0, 0, (int)FL_SUBMENU, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
+    { "Documentation...", 0, 0, 0, (int)FL_MENU_DIVIDER, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
+    { "About...", 0, 0, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
+    {0,0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0}
+};
+
+// Callback methods
+
+// Menu command callbacks
+void Viewer::cb_New_i(Fl_Menu_*, void*)
+{
+    fl_alert("New command");
 }
 
+void Viewer::cb_Test_i(Fl_Menu_*, void*)
+{
+    fl_alert("Test command");
+}
+
+void Viewer::cb_Exit_i(Fl_Menu_*, void*)
+{
+    this->topLevel->hide();
+}
+
+// Other control callbacks
+void Viewer::cb_NewState_i(Fl_Button*, void*)
+{
+    fl_alert("Create new state in edit area.");
+}
+
+void Viewer::cb_NewTransition_i(Fl_Button*, void*)
+{
+    fl_alert("Create new transition in edit area.");
+}
+
+
+// Callback "helpers"
+
+// Menu command callback helpers
+void Viewer::cb_New(Fl_Menu_* menu, void* data)
+{
+    ((Viewer*)(menu->parent()->user_data()))->cb_New_i(menu, data);
+}
+
+void Viewer::cb_Test(Fl_Menu_* menu, void* data)
+{
+    ((Viewer*)(menu->parent()->user_data()))->cb_Test_i(menu, data);
+}
+
+void Viewer::cb_Exit(Fl_Menu_* menu, void* data)
+{
+    ((Viewer*)(menu->parent()->user_data()))->cb_Exit_i(menu, data);
+}
+
+// Other control command callback helpers
+void Viewer::cb_NewState(Fl_Button* btn, void* data)
+{
+    ((Viewer*)data)->cb_NewState_i(btn, data);
+}
+
+void Viewer::cb_NewTransition(Fl_Button* btn, void* data)
+{
+    ((Viewer*)data)->cb_NewTransition_i(btn, data);
+}
+
+// Constructor, creates the main window and controls and performs layout
+Viewer::Viewer()
+{
+    topLevel = new Fl_Double_Window(width, height, "State Machine Generator");
+    topLevel->user_data((void*)(this));
+    topLevel->resizable(topLevel);
+    {
+        Fl_Menu_Bar* mb = new Fl_Menu_Bar(0, 0, width, mb_height);
+        mb->box(FL_NO_BOX);
+        mb->menu(mainMenu);
+
+        // Palette and canvas editing area are tiled side-by-side
+        Fl_Tile* tile = new Fl_Tile(0, mb_height, width, height - mb_height);
+        {
+            Fl_Box* r = new Fl_Box(tile->x() + border,
+                                   tile->y() + border,
+                                   tile->w() - 2 * border,
+                                   tile->h() - 2 * border);
+            tile->resizable(r);
+
+            // palette window
+            palette = new Fl_Double_Window(0,
+                                           mb_height,
+                                           palette_width,
+                                           height - mb_height);
+            // Draw boundaries around the palette
+            palette->box(FL_NO_BOX);
+            {
+                palette_box = new Fl_Box(0, 0, palette_width, height - mb_height);
+                palette_box->box(FL_DOWN_BOX);
+                palette_box->color(19);
+                palette_box->align(FL_ALIGN_CLIP|FL_ALIGN_INSIDE|FL_ALIGN_WRAP);
+            }
+            palette->resizable(palette_box);
+
+            // layout control of palette
+            palette_a = new Fl_Group(0, 0, palette_width, height - mb_height);
+            {
+                palette_gv = new Fl_Group(0, 0, palette_a->w(), palette_a->h() - 10);
+                {
+                    palette_container = new Fl_Group(0, 0, palette_a->w() - 10, palette_a->h() - 10);
+                    {
+                        add_state = new Fl_Button(20, 20, 75, 25, "State");
+                        add_state->callback((Fl_Callback*)cb_NewState);
+                        add_state->user_data((void*)this);
+                        add_transition = new Fl_Button(20, 65, 75, 25, "Transition");
+                        add_transition->callback((Fl_Callback*)cb_NewTransition);
+                        add_transition->user_data((void*)this);
+                    }
+                    palette_container->end();
+
+                    palette_v = new Fl_Box(palette_container->w(), 0, 10, palette_container->h());
+                }
+                palette_gv->resizable(palette_v);
+                palette_gv->end();
+
+                palette_h = new Fl_Box(0, palette_gv->h(), palette_gv->w(), 10);
+                
+            }
+            palette_a->resizable(palette_h);
+            palette_a->end();
+
+            //add_state = new Fl_Button(20, 20, 75, 25, "State");
+            //add_transition = new Fl_Button(20, 65, 75, 25, "Transition");
+
+            palette->end();
+
+            // canvas editing area
+            canvas = new Fl_Double_Window(palette_width,
+                                          mb_height,
+                                          width - palette_width,
+                                          height - mb_height);
+
+            // Draw boundaries around canvas editing area
+            canvas->box(FL_NO_BOX);
+            {
+                canvas_box = new Fl_Scroll(0, 0, width - palette_width, height - mb_height, "Text");
+                canvas_box->box(FL_DOWN_BOX);
+                canvas_box->color(9);
+                canvas_box->align(FL_ALIGN_CLIP|FL_ALIGN_INSIDE|FL_ALIGN_WRAP);
+                canvas_box->end();
+            }
+            canvas->resizable(canvas_box);
+            canvas->end();
+        }
+        tile->end();
+        topLevel->resizable(tile);
+   }
+    
+    topLevel->end();
+}
+
+// Open the window on the display
 void Viewer::show(int argc, char *argv[])
 {
     topLevel->show(argc, argv);
 }
 
+// Start the GUI message pump
 int Viewer::run()
 {
     return Fl::run();
 }
 
+
+// GUI initialization function to be called by the controller
 Viewer* open_viewer(int argc, char* argv[])
 {
     Viewer* retval = new Viewer;
