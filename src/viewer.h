@@ -35,6 +35,8 @@ private:
 
     static Fl_Menu_Item mainMenu[];
 
+    void load_diagram();
+
     // callbacks
     inline void cb_New_i(Fl_Menu_*, void*);
     inline void cb_Test_i(Fl_Menu_*, void*);
@@ -43,10 +45,13 @@ private:
     inline void cb_NewTransition_i(Fl_Button*, void*);
 
     static void cb_New(Fl_Menu_*, void*);
+    static void cb_Open(Fl_Menu_*, void*);
     static void cb_Test(Fl_Menu_*, void*);
     static void cb_Exit(Fl_Menu_*, void*);
     static void cb_NewState(Fl_Button*, void*);
     static void cb_NewTransition(Fl_Button*, void*);
+
+
     static const int border = 20;
     static const int width = 480;
     static const int height = 280;

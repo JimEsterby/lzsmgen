@@ -2,14 +2,17 @@
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Tile.H>
 #include <FL/fl_ask.H>
+#include <FL/Fl_File_Chooser.H>
 #include "viewer.h"
+#include "file_callback.h"
+#include "data_callback.h"
 
 // Main application menu
 Fl_Menu_Item Viewer::mainMenu[] =
 {
     { "&File", 0,  0, 0, (int)FL_SUBMENU, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
     { "New", 0,  (Fl_Callback*)Viewer::cb_New, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
-    { "Open...", 0, 0, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
+    { "Open...", 0, (Fl_Callback*)Viewer::cb_Open, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
     { "Save", 0, 0, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
     { "Save as...", 0, 0, 0, (int)FL_MENU_DIVIDER, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
     { "E&xit", 0, (Fl_Callback*)Viewer::cb_Exit, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
@@ -68,6 +71,23 @@ void Viewer::cb_NewTransition_i(Fl_Button*, void*)
 void Viewer::cb_New(Fl_Menu_* menu, void* data)
 {
     ((Viewer*)(menu->parent()->user_data()))->cb_New_i(menu, data);
+}
+
+void Viewer::cb_Open(Fl_Menu_* menu, void* data)
+{
+    char* file_name;
+    //Viewer* v = (Viewer*)menu->parent()->user_data();
+
+    file_name = fl_file_chooser("Open diagram file", "Diagram (*.json", NULL);
+
+    if (file_name)
+    {
+        if (file_callback->open_file_request(file_name))
+        {
+            // TODO
+            fl_alert("Opened file %s", file_name);
+        }
+    }
 }
 
 void Viewer::cb_Test(Fl_Menu_* menu, void* data)
@@ -195,6 +215,11 @@ int Viewer::run()
     return Fl::run();
 }
 
+// Load diagram into the canvas area 
+void Viewer::load_diagram()
+{
+
+}
 
 // GUI initialization function to be called by the controller
 Viewer* open_viewer(int argc, char* argv[])
