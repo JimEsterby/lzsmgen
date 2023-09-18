@@ -159,7 +159,7 @@ Component appears in edit section and data is updated in the model. TODO: How is
 
 | Test Case 11 | |
 | --- | --- |
-| Brief description | A "create" action when the edit area is empty or the model data has been saved. |
+| Brief description | A "create" action when the edit area is empty. |
 | Reason for test | Check expected use of the "create" action. |
 | Type | **System** |
 | Map to user story | [KAN-11 Create diagram](https://jde-psu.atlassian.net/browse/KAN-11) |
@@ -187,5 +187,201 @@ The program never loses changes, except by explicit command of the user.
 
 ---
 
+| Test Case 13 | |
+| --- | --- |
+| Brief description | A "create" action when model data has been saved. |
+| Reason for test | Check expected use of the "create" action. |
+| Type | **System** |
+| Map to user story | [KAN-11 Create diagram](https://jde-psu.atlassian.net/browse/KAN-11) |
+#### Steps
+1. Load a model. Note: [KAN-10](https://jde-psu.atlassian.net/browse/KAN-10) is required to be implemented for this.
+2. Select "New" command from application menu.
+#### Expected results
+1. No dialog appears.
+2. Model file is unloaded.
+3. Edit area is cleared.
 
+---
 
+| Test Case 14 | |
+| --- | --- |
+| Brief description | Move component within editing area. |
+| Reason for test | Check move functionality. |
+| Type | **Unit** |
+| Map to user story | [KAN-13 Move component](https://jde-psu.atlassian.net/browse/KAN-13) |
+#### Steps
+1. Add component to editing area. Note: [KAN-12](https://jde-psu.atlassian.net/browse/KAN-12) is required to be implemented.
+2. Select component with mouse cursor.
+3. While holding mouse button down, move component around the editing area.
+
+#### Expected results
+1. At step 2, some indication of selection shows (highlighting?)
+2. During step 3, the component moves with the mouse cursor.
+3. Note: If the component is moved beyond the editing area, scroll bars appear.
+
+---
+
+| Test Case 15 | |
+| --- | --- |
+| Brief description | Resize component within editing area. |
+| Reason for test | Check resize functionality. |
+| Type | **Unit** |
+| Map to user story | [KAN-13 Move component](https://jde-psu.atlassian.net/browse/KAN-13) |
+#### Steps
+1. Add component to editing area. Note: [KAN-12](https://jde-psu.atlassian.net/browse/KAN-12) is required to be implemented.
+2. Select component with mouse cursor on a vertical edge.
+3. Move the mouse with mouse button pressed.
+
+#### Expected results
+1. At step 2, some indication of selection shows (highlighting?)
+2. During step 3, the component changes width with the mouse cursor.
+
+---
+
+| Test Case 16 | |
+| --- | --- |
+| Brief description | Resize component within editing area. |
+| Reason for test | Check resize functionality. |
+| Type | **Unit** |
+| Map to user story | [KAN-13 Move component](https://jde-psu.atlassian.net/browse/KAN-13) |
+#### Steps
+1. Add component to editing area. Note: [KAN-12](https://jde-psu.atlassian.net/browse/KAN-12) is required to be implemented.
+2. Select component with mouse cursor on a horizontal edge.
+3. Move the mouse with mouse button pressed.
+
+#### Expected results
+1. At step 2, some indication of selection shows (highlighting?)
+2. During step 3, the component changes height with the mouse cursor.
+
+---
+
+| Test Case 17 | |
+| --- | --- |
+| Brief description | Resize component within editing area. |
+| Reason for test | Check resize functionality. |
+| Type | **Unit** |
+| Map to user story | [KAN-13 Move component](https://jde-psu.atlassian.net/browse/KAN-13) |
+#### Steps
+1. Add component to editing area. Note: [KAN-12](https://jde-psu.atlassian.net/browse/KAN-12) is required to be implemented.
+2. Select component with mouse cursor on a corner.
+3. Move the mouse with mouse button pressed.
+
+#### Expected results
+1. At step 2, some indication of selection shows (highlighting?)
+2. During step 3, the component changes width and height with the mouse cursor.
+
+---
+
+| Test Case 18 | |
+| --- | --- |
+| Brief description | Resize transition component within editing area. |
+| Reason for test | Check transition resize functionality. |
+| Type | **Unit** |
+| Map to user story | [KAN-13 Move component](https://jde-psu.atlassian.net/browse/KAN-13) |
+#### Steps
+1. Add transition component to editing area. Note: [KAN-12](https://jde-psu.atlassian.net/browse/KAN-12) is required to be implemented.
+2. Select transition with mouse cursor on an end-point vertex.
+3. Move the mouse with mouse button pressed.
+
+#### Expected results
+1. At step 2, some indication of selection shows (highlighting?)
+2. During step 3, the transition changes length and angle with the mouse cursor.
+
+---
+
+| Test Case 19 | |
+| --- | --- |
+| Brief description | Save newly created diagram to file |
+| Reason for test | Check saving to new file |
+| Type | **System** |
+| Map to user story | [KAN-6 Diagram file save](https://jde-psu.atlassian.net/browse/KAN-6) |
+#### Steps
+1. Add components to editing area. Note: [KAN-12](https://jde-psu.atlassian.net/browse/KAN-12) is required to be implemented.
+2. Select "Save" command from the menu.
+3. Enter unique file name into dialog box that appears.
+4. Select "OK" in dialog box.
+
+#### Expected results
+1. At step 2, a "File save as" dialog appears.
+2. A file with the entered file name exists on the computer media.
+
+---
+
+| Test Case 20 | |
+| --- | --- |
+| Brief description | Save previously opened diagram |
+| Reason for test | Check saving to file |
+| Type | **System** |
+| Map to user story | [KAN-6 Diagram file save](https://jde-psu.atlassian.net/browse/KAN-6) |
+#### Steps
+1. Copy a diagram file to a new name. On the Windows console, copy *diagram.json* *diagram2.json*.
+2. Load diagram.json (need [KAN-10](https://jde-psu.atlassian.net/browse/KAN-10)).
+2. Change the size of a component in the edit section.
+3. Select "Save" command from the menu.
+
+#### Expected results
+1. *diagram.json* is different from *diagram2.json*.
+2. The application provides an indication of saving.
+
+---
+
+| Test Case 21 | |
+| --- | --- |
+| Brief description | Save diagrams |
+| Reason for test | Check saving to file |
+| Type | **User Acceptance** |
+| Map to user story | [KAN-6 Diagram file save](https://jde-psu.atlassian.net/browse/KAN-6) |
+#### Steps
+The "Save" menu command is selected under various conditions.
+
+#### Expected results
+Files are saved and the user receives notice of overwriting at appropriate times.
+
+---
+
+| Test Case 22 | |
+| --- | --- |
+| Brief description | Editing new component |
+| Reason for test | Check for appropriate dialog pop-up |
+| Type | **Unit** |
+| Map to user story | [KAN-14 Edit component](https://jde-psu.atlassian.net/browse/KAN-14) |
+#### Steps
+Perform all steps for each component
+1. Add component to edit area
+2. Double click component
+
+#### Expected results
+The dialog unique to the component pops up.
+
+---
+
+| Test Case 23 | |
+| --- | --- |
+| Brief description | Editing component multiple times |
+| Reason for test | Check for information retention |
+| Type | **System** |
+| Map to user story | [KAN-14 Edit component](https://jde-psu.atlassian.net/browse/KAN-14) |
+#### Steps
+Perform all steps for each component
+1. Add component to edit area
+2. Double click component
+3. Enter values into dialog
+4. Close with dialog "OK" button
+5. Double click component again
+
+#### Expected results
+The second time the dialog pops up, its fields are already populated with the values entered the first time the dialog appeared.
+
+---
+
+| Test Case 24 | |
+| --- | --- |
+| Brief description | Editing component from a previously created diagram |
+| Reason for test | Check for information retention |
+| Type | **System** |
+| Map to user story | [KAN-14 Edit component](https://jde-psu.atlassian.net/browse/KAN-14) |
+#### Steps
+After loading a diagram file, double click each unique component.
+
+#### Expected results
+Components fields are already populated with the values stored in the diagram file.
