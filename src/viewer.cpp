@@ -4,6 +4,7 @@
 #include <FL/fl_ask.H>
 #include <FL/Fl_File_Chooser.H>
 #include "viewer.h"
+#include "state_pict.h"
 #include "file_callback.h"
 #include "data_callback.h"
 
@@ -54,9 +55,10 @@ void Viewer::cb_Exit_i(Fl_Menu_*, void*)
 }
 
 // Other control callbacks
-void Viewer::cb_NewState_i(Fl_Button*, void*)
+void Viewer::cb_NewState_i(Fl_Button* btn, void* data)
 {
-    fl_alert("Create new state in edit area.");
+     canvas_box->add((Fl_Widget*) new StatePict(10, 10, 75, 45, "state"));
+     canvas_box->redraw();
 }
 
 void Viewer::cb_NewTransition_i(Fl_Button*, void*)
