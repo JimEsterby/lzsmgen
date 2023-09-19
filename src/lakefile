@@ -2,11 +2,14 @@
 
 -- Distinguish between Windows and Linux by checking path separator
 LIBS = 'fltk'
+DEFS = '__LINUX__'
 if package.config:sub(1,1) ~= '/' then
     LIBS = {'fltk', 'ole32', 'gdi32', 'uuid', 'comctl32'}
+    DEFS = WIN32
 end
 
 cpp.program{'lzsmgen',
     src = '.',
+    defines = DEFS,
     libs = LIBS
 }
