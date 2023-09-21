@@ -5,6 +5,7 @@
 #include <FL/Fl_File_Chooser.H>
 #include "viewer.h"
 #include "state_pict.h"
+#include "transition_pict.h"
 #include "file_callback.h"
 #include "data_callback.h"
 
@@ -28,6 +29,8 @@ Fl_Menu_Item Viewer::mainMenu[] =
     { "Build", 0, 0, 0, (int)FL_SUBMENU, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
     { "C-code", 0, 0, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
     { "Image", 0, 0, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
+    // Remove later, but useful for concept exploration
+    { "Test", 0, (Fl_Callback*)Viewer::cb_Test, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
     {0,0,0,0,0,0,0,0,0},
     { "&Help", 0, 0, 0, (int)FL_SUBMENU, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
     { "Documentation...", 0, 0, 0, (int)FL_MENU_DIVIDER, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
@@ -46,7 +49,12 @@ void Viewer::cb_New_i(Fl_Menu_*, void*)
 
 void Viewer::cb_Test_i(Fl_Menu_*, void*)
 {
-    fl_alert("Test command");
+    fl_alert("Editor children = %d", editor->children());
+    for (int i = 0; i < editor->children(); i++)
+    {
+        editor->child(i)->damage(FL_DAMAGE_CHILD);
+    }
+    editor->redraw();
 }
 
 void Viewer::cb_Exit_i(Fl_Menu_*, void*)
@@ -57,13 +65,14 @@ void Viewer::cb_Exit_i(Fl_Menu_*, void*)
 // Other control callbacks
 void Viewer::cb_NewState_i(Fl_Button* btn, void* data)
 {
-     canvas_box->add((Fl_Widget*) new StatePict(10, 10, 75, 45, "state"));
-     canvas_box->redraw();
+     editor->add((Fl_Widget*) new StatePict(10, 10, 75, 45, "state"));
+     editor->redraw();
 }
 
 void Viewer::cb_NewTransition_i(Fl_Button*, void*)
 {
-    fl_alert("Create new transition in edit area.");
+    editor->add((Fl_Widget*) new TransitionPict(10, 60, 75, 45));
+    editor->redraw();
 }
 
 
@@ -143,7 +152,7 @@ Viewer::Viewer()
             {
                 palette_box = new Fl_Box(0, 0, palette_width, height - mb_height);
                 palette_box->box(FL_DOWN_BOX);
-                palette_box->color(19);
+                palette_box->color(9);
                 palette_box->align(FL_ALIGN_CLIP|FL_ALIGN_INSIDE|FL_ALIGN_WRAP);
             }
             palette->resizable(palette_box);
@@ -155,10 +164,12 @@ Viewer::Viewer()
                 {
                     palette_container = new Fl_Group(0, 0, palette_a->w() - 10, palette_a->h() - 10);
                     {
-                        add_state = new Fl_Button(20, 20, 75, 25, "State");
+                        add_state = new Fl_Button(20, 20, 75, 45, "State");
+                        //add_state->box(FL_ROUNDED_BOX);
+                        add_state->color((Fl_Color)215);  // light yellow
                         add_state->callback((Fl_Callback*)cb_NewState);
                         add_state->user_data((void*)this);
-                        add_transition = new Fl_Button(20, 65, 75, 25, "Transition");
+                        add_transition = new Fl_Button(20, 85, 75, 25, "Transition");
                         add_transition->callback((Fl_Callback*)cb_NewTransition);
                         add_transition->user_data((void*)this);
                     }
@@ -189,13 +200,12 @@ Viewer::Viewer()
             // Draw boundaries around canvas editing area
             canvas->box(FL_NO_BOX);
             {
-                canvas_box = new Fl_Scroll(0, 0, width - palette_width, height - mb_height, "Text");
-                canvas_box->box(FL_DOWN_BOX);
-                canvas_box->color(9);
-                canvas_box->align(FL_ALIGN_CLIP|FL_ALIGN_INSIDE|FL_ALIGN_WRAP);
-                canvas_box->end();
+                editor = new DiagramEditor(0, 0, width - palette_width, height - mb_height, "Text");
+                editor->box(FL_DOWN_BOX);
+                editor->align(FL_ALIGN_CLIP|FL_ALIGN_INSIDE|FL_ALIGN_WRAP);
+                editor->end();
             }
-            canvas->resizable(canvas_box);
+            canvas->resizable(editor);
             canvas->end();
         }
         tile->end();

@@ -5,7 +5,7 @@
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Menu_Bar.H>
 #include <FL/Fl_Button.H>
-#include <FL/Fl_Scroll.H>
+#include "diagram_editor.h"
 
 class Viewer
 {
@@ -18,7 +18,7 @@ public:
 private:
     Fl_Double_Window* topLevel;  // main application window
     Fl_Double_Window* canvas;
-    Fl_Scroll* canvas_box;  // For resizing/layout
+    DiagramEditor* editor;
     Fl_Double_Window* palette;
     Fl_Box* palette_box;  // For resizing/layout
 
