@@ -9,7 +9,7 @@ TransitionPict::TransitionPict(int x, int y, int w, int h, const char* name)
 {
     //color(DiagramEditor::backcolor);
     //color(0);
-    box(FL_OVAL_BOX);
+    //box(FL_ROUNDED_BOX);
     x_org = x + margin;
     y_org = y + margin;
     x_dest = x + w - margin;
@@ -78,51 +78,57 @@ int TransitionPict::handle(int event)
 
     if (FL_LEFT_MOUSE == Fl::event_button())
     {	
-	    switch (event)
-	    {
-	    case FL_PUSH:
+        switch (event)
+        {
+        case FL_PUSH:
             center(&x_center, &y_center);
-	        offset[0] = x_center - ev_x;
-	        offset[0] = y_center - ev_y;
-	        rect[0] = x_org;
-	        rect[1] = y_org;
-	        rect[2] = x_dest;
-	        rect[3] = y_dest;
+            offset[0] = x_center - ev_x;
+            offset[0] = y_center - ev_y;
+            rect[0] = x_org;
+            rect[1] = y_org;
+            rect[2] = x_dest;
+            rect[3] = y_dest;
             drag_type = drag_area(ev_x, ev_y);
-	        result = 1;
-	        break;
-	
-	    case FL_RELEASE:
+            result = 1;
+            break;
+
+        case FL_RELEASE:
             // Clear the other selections in the parent editor
             ed = (DiagramEditor*)parent();
-			ed->clear_selections();
-			this->select();
-	        result = 1;
-            // Update dimensions
-            x_org = rect[0];
-            y_org = rect[1];
-            x_dest = rect[2];
-            y_dest = rect[3];
-	        break;
-	
-	    case FL_DRAG:
+            ed->clear_selections();
+            this->select();
+            result = 1;
+            break;
+
+        case FL_DRAG:
             if (drag_type == cent)
             {
                 position(offset[0] + ev_x, offset[1] + ev_y);
+                transition_resize(rect[0] + offset[0] + ev_x,
+                                  rect[1] + offset[1] + ev_y,
+                                  rect[2] + offset[0] + ev_x,
+                                  rect[3] + offset[1] + ev_y);
+
+                x_org = rect[0] + offset[0] + ev_x;
+                y_org = rect[1] + offset[1] + ev_y;
+                x_dest = rect[2] + offset[0] + ev_x;
+                y_dest = rect[3] + offset[1] + ev_y;
             }
             else if (drag_type == org)
             {
+                x_org = ev_x; y_org = ev_y; x_dest = rect[2]; y_dest = rect[3];
                 transition_resize(ev_x, ev_y, rect[2], rect[3]);
             }
             else if (drag_type == dest)
             {
+                x_org = rect[0]; y_org = rect[1]; x_dest = ev_x; y_dest = ev_y;
                 transition_resize(rect[0], rect[1], ev_x, ev_y);
             }
-	        
-	        ((Fl_Window*)parent())->redraw();
-	        result = 1;
+
+            ((Fl_Window*)parent())->redraw();
+            result = 1;
             break;
-	    }
+        }
     }
 
     return result;
@@ -130,19 +136,16 @@ int TransitionPict::handle(int event)
 
 void TransitionPict::draw()
 {
+    draw_label();
     fl_begin_line();
     fl_vertex(x_org, y_org);
     fl_vertex(x_dest, y_dest);
     fl_end_line();
-    //fl_line(vertex[6], vertex[7], vertex[2], vertex[3]);
+    draw_arrow();
 
     if (is_selected())
     {
-        fl_begin_line();
-        fl_vertex(x_org, y_org);
-        fl_vertex(x_org+20, y_org+20);
-        fl_end_line();
-
+        // TODO
     }
 }
 
@@ -201,6 +204,55 @@ int TransitionPict::drag_area(int x, int y)
     }
 
     return result;
+}
+
+void TransitionPict::draw_arrow()
+{
+    if (x_org == x_dest)  // vertical
+    {
+        fl_begin_line();
+        if (y_org > y_dest)
+        {
+            fl_vertex(x_dest - arrow_head/2, y_dest + (86 * arrow_head)/100);
+            fl_vertex(x_dest, y_dest);
+            fl_vertex(x_dest + arrow_head/2, y_dest + (86 * arrow_head)/100);
+        }
+        else
+        {
+            fl_vertex(x_dest + arrow_head/2, y_dest - (86 * arrow_head)/100);
+            fl_vertex(x_dest, y_dest);
+            fl_vertex(x_dest - arrow_head/2, y_dest - (86 * arrow_head)/100);
+        }
+        fl_end_line();
+    }
+
+    else if (y_org == y_dest)  // horizontal
+    {
+        fl_begin_line();
+        if (x_org > x_dest)
+        {
+            fl_vertex(x_dest + (86 * arrow_head)/100, y_dest + arrow_head/2);
+            fl_vertex(x_dest, y_dest);
+            fl_vertex(x_dest + (86 * arrow_head)/100, y_dest - arrow_head/2);
+        }
+        else
+        {
+            fl_vertex(x_dest - (86 * arrow_head)/100, y_dest + arrow_head/2);
+            fl_vertex(x_dest, y_dest);
+            fl_vertex(x_dest - (86 * arrow_head)/100, y_dest - arrow_head/2);
+        }
+        fl_end_line();
+    }
+#if 0 // TODO
+    else
+    {
+        // rectangular to polar coordinates
+        int r = (int)round(distance(x_org, y_org, x_dest, y_dest));
+        int th = (int)round(atan2(abs(y_dest - y_org), abs(x_dest - x_org)));
+        r = r - (86 * arrow_head)/100;
+
+    }
+#endif
 }
 
 double TransitionPict::distance(int x1, int y1, int x2, int y2)

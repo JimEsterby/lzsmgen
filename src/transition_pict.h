@@ -28,6 +28,7 @@ private:
     static const int grab_area = 10;
 
     int drag_area(int x, int y);
+    void draw_arrow();
 
     // Standard distance formula
     static double distance(int x1, int y1, int x2, int y2);

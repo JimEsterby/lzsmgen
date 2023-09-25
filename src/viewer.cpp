@@ -65,13 +65,16 @@ void Viewer::cb_Exit_i(Fl_Menu_*, void*)
 // Other control callbacks
 void Viewer::cb_NewState_i(Fl_Button* btn, void* data)
 {
-     editor->add((Fl_Widget*) new StatePict(10, 10, 75, 45, "state"));
+    StatePict* sp = new StatePict(10, 10, 75, 45, "state");
+
+     editor->add((Fl_Widget*) sp);
      editor->redraw();
 }
 
 void Viewer::cb_NewTransition_i(Fl_Button*, void*)
 {
-    editor->add((Fl_Widget*) new TransitionPict(10, 60, 75, 45));
+    TransitionPict* tp = new TransitionPict(10, 60, 75, 45);
+    editor->add((Fl_Widget*) tp);
     editor->redraw();
 }
 
