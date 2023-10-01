@@ -19,6 +19,8 @@ protected:
     enum border{ top_left,    top,    top_right,
                  left,        center, right,
                  bottom_left, bottom, bottom_right };
+
+    void draw_selection_box(int x, int y, int dim, Fl_Color c);
 };
 
 #endif

@@ -22,3 +22,18 @@ void DiagramEditor::clear_selections()
         }
     }
 }
+
+void DiagramEditor::select_component(ComponentPict* cp)
+{
+    if (selected)
+    {
+        selected->unselect();
+        selected->redraw();
+    }
+    selected = cp;
+    if (cp)
+    {
+        selected->select();
+        selected->redraw();
+    }
+}

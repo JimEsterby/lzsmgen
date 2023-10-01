@@ -41,7 +41,12 @@ int StatePict::handle(int event)
 		(void)mouse_loc();
 	}
 
-	if (event == FL_LEAVE)
+	else if (event == FL_MOVE)
+	{
+		(void)mouse_loc();
+	}
+
+	else if (event == FL_LEAVE)
 	{
 		fl_cursor(FL_CURSOR_DEFAULT);
 	}
@@ -63,8 +68,7 @@ int StatePict::handle(int event)
 	
 	    case FL_RELEASE:
             // Clear the other selections in the parent editor
-			ed->clear_selections();
-			this->select();
+			ed->select_component(this);
             fl_cursor(FL_CURSOR_DEFAULT);
 
 	        result = 1;
@@ -73,6 +77,7 @@ int StatePict::handle(int event)
 	    case FL_DRAG:
 	        // This is code necessary to handling all of the resizing possibilities
 	        // while maintaining a minimum dimensions for the component
+			ed->select_component(this);
 	        switch (loc)
 	        {
 	        case top:

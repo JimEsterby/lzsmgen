@@ -7,9 +7,6 @@
 TransitionPict::TransitionPict(int x, int y, int w, int h, const char* name)
 : ComponentPict(x, y, w, h, name)
 {
-    //color(DiagramEditor::backcolor);
-    //color(0);
-    //box(FL_ROUNDED_BOX);
     x_org = x + margin;
     y_org = y + margin;
     x_dest = x + w - margin;
@@ -95,8 +92,7 @@ int TransitionPict::handle(int event)
         case FL_RELEASE:
             // Clear the other selections in the parent editor
             ed = (DiagramEditor*)parent();
-            ed->clear_selections();
-            this->select();
+            ed->select_component(this);
             result = 1;
             break;
 
@@ -145,7 +141,15 @@ void TransitionPict::draw()
 
     if (is_selected())
     {
-        // TODO
+        int x_center;
+        int y_center;
+
+        center(&x_center, &y_center);
+
+        // Little red box around the origin of the transition
+        draw_selection_box(x_org, y_org, 2, FL_RED);
+        draw_selection_box(x_center, y_center, 2, FL_RED);
+        draw_selection_box(x_dest, y_dest, 2, FL_RED);
     }
 }
 
@@ -229,13 +233,13 @@ void TransitionPict::draw_arrow()
     else if (y_org == y_dest)  // horizontal
     {
         fl_begin_line();
-        if (x_org > x_dest)
+        if (x_org > x_dest)  // 180 degrees
         {
             fl_vertex(x_dest + (86 * arrow_head)/100, y_dest + arrow_head/2);
             fl_vertex(x_dest, y_dest);
             fl_vertex(x_dest + (86 * arrow_head)/100, y_dest - arrow_head/2);
         }
-        else
+        else  // 0 degrees
         {
             fl_vertex(x_dest - (86 * arrow_head)/100, y_dest + arrow_head/2);
             fl_vertex(x_dest, y_dest);
@@ -243,16 +247,40 @@ void TransitionPict::draw_arrow()
         }
         fl_end_line();
     }
-#if 0 // TODO
+
     else
     {
-        // rectangular to polar coordinates
-        int r = (int)round(distance(x_org, y_org, x_dest, y_dest));
-        int th = (int)round(atan2(abs(y_dest - y_org), abs(x_dest - x_org)));
-        r = r - (86 * arrow_head)/100;
+        double x_offset = -x_dest;
+        double y_offset = -y_dest;
 
+        // Put destination at (0, 0)
+        double x_org_0 = x_org + x_offset;
+        double y_org_0 = y_org + y_offset;
+        double radians = std::atan2(y_org_0, x_org_0);
+        x_org_0 = arrow_head * std::cos(radians);
+        y_org_0 = arrow_head * std::sin(radians);
+        // angle of the arrow head is 60 degrees
+        double sin30 = std::sin(0.5236);  // 0.5236 = 30 degrees
+        double cos30 = std::cos(0.5236);
+        double sin_m30 = std::sin(-0.5236);
+        double cos_m30 = std::cos(-0.5236);
+        double x_arr1_0 = x_org_0 * cos30 - y_org_0 * sin30;
+        double y_arr1_0 = y_org_0 * cos30 + x_org_0 * sin30;
+        double x_arr2_0 = x_org_0 * cos_m30 - y_org_0 * sin_m30;
+        double y_arr2_0 = y_org_0 * cos_m30 + x_org_0 * sin_m30;
+
+        // Take the offset back out
+        double x_arr1 = x_arr1_0 - x_offset;
+        double y_arr1 = y_arr1_0 - y_offset;
+        double x_arr2 = x_arr2_0 - x_offset;
+        double y_arr2 = y_arr2_0 - y_offset;
+
+        fl_begin_line();
+        fl_vertex((int)round(x_arr1), (int)round(y_arr1));
+        fl_vertex(x_dest, y_dest);
+        fl_vertex((int)round(x_arr2), (int)round(y_arr2));
+        fl_end_line();
     }
-#endif
 }
 
 double TransitionPict::distance(int x1, int y1, int x2, int y2)

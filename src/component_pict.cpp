@@ -1,4 +1,5 @@
 #include "component_pict.h"
+#include <FL/fl_draw.H>
 
 ComponentPict::ComponentPict(int x, int y, int w, int h, const char* name)
 : Fl_Widget(x, y, w, h, name)
@@ -37,3 +38,20 @@ int ComponentPict::handle(int event)
 
 	return result;
 }
+
+void ComponentPict::draw_selection_box(int x, int y, int dim, Fl_Color c)
+{
+	Fl_Color saved = fl_color();
+	fl_color(c);
+
+	fl_begin_line();
+	fl_vertex(x - dim, y - dim);
+	fl_vertex(x + dim, y - dim);
+	fl_vertex(x + dim, y + dim);
+	fl_vertex(x - dim, y + dim);
+	fl_vertex(x - dim, y - dim);
+	fl_end_line();
+
+	fl_color(saved);  // Restore color
+}
+
