@@ -117,7 +117,8 @@ Component appears in edit section.
 #### Steps
 Select component with mouse.
 #### Expected results
-Component appears in edit section and data is updated in the model. TODO: How is data to be checked in the model?
+1. GUI: Component immediately appears in the edit section of the application window.
+2. Back-end: Component is added to the appropriate back-end container. Now this container is the Diagram class.
 
 ---
 
@@ -385,3 +386,51 @@ After loading a diagram file, double click each unique component.
 
 #### Expected results
 Components fields are already populated with the values stored in the diagram file.
+
+---
+
+| Test Case 25 | |
+| --- | --- |
+| Brief description | Generate code from correct diagram |
+| Reason for test | Main function of the application. |
+| Type | **User Acceptance** |
+| Map to user story | [KAN-19 Code generation](https://jde-psu.atlassian.net/browse/KAN-19) |
+#### Steps
+1. Create simple diagram with 2 states with 1 transition connecting the states.
+2. Save as diagram file.
+3. Select the "Generate code" command.
+ 
+#### Expected results
+1. Resulting C-code files should compile without errors.
+2. If the C-code is linked with a driver program, the resulting application should operate in accordance with the diagram.
+
+| Test Case 26 | |
+| --- | --- |
+| Brief description | Generate code from unsaved diagram |
+| Reason for test | Check user prompt |
+| Type | **System** |
+| Map to user story | [KAN-19 Code generation](https://jde-psu.atlassian.net/browse/KAN-19) |
+#### Steps
+1. Create simple diagram with 2 states with 1 transition connecting the states. Do not save.
+2. Select the "Generate code" command.
+
+#### Expected results
+A prompt to save the diagram pops up.
+
+---
+
+| Test Case 27 | |
+| --- | --- |
+| Brief description | Response to incorrect diagram |
+| Reason for test | Check that application handles incorrect diagrams gracefully. |
+| Type | **User Acceptance** |
+| Map to user story | [KAN-19 Code generation](https://jde-psu.atlassian.net/browse/KAN-19) |
+#### Steps
+1. Create simple diagram with 2 states and no transitions.
+2. Save as diagram file.
+3. Select the "Generate code" command.
+
+#### Expected results
+1. No files are generated.
+2. The user is informed of a problem with the diagram.
+
