@@ -434,3 +434,17 @@ A prompt to save the diagram pops up.
 1. No files are generated.
 2. The user is informed of a problem with the diagram.
 
+---
+
+| Test Case 28 | |
+| --- | --- |
+| Brief description | Component deletion. |
+| Reason for test | Check component deletion. |
+| Type | **System** |
+| Map to user story | [KAN-12 Add component](https://jde-psu.atlassian.net/browse/KAN-12) |
+#### Steps
+1. Select component with mouse.
+2. Select "delete" command
+#### Expected results
+1. GUI: Component no longer shows on the application.
+2. Back-end: Component is removed from the appropriate back-end container. Now this container is the Diagram class.
