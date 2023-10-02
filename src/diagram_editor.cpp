@@ -1,5 +1,4 @@
 #include "diagram_editor.h"
-#include "component_pict.h"
 
 DiagramEditor::DiagramEditor(int x, int y, int w, int h, const char* name)
 : Fl_Scroll(x, y, w, h, name)
