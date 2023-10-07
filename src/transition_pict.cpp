@@ -103,18 +103,6 @@ int TransitionPict::handle(int event)
             {
                 position(offset[0] + ev_x, offset[1] + ev_y);
                 translate(orient);
-
-#if 0
-                transition_resize(rect[0] + offset[0] + ev_x,
-                                  rect[1] + offset[1] + ev_y,
-                                  rect[2] + offset[0] + ev_x,
-                                  rect[3] + offset[1] + ev_y);
-
-                x_org = rect[0] + offset[0];
-                y_org = rect[1] + offset[1];
-                x_dest = rect[2] + offset[0];
-                y_dest = rect[3] + offset[1];
-#endif
             }
             else if (drag_type == org)
             {

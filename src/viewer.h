@@ -41,6 +41,7 @@ private:
     inline void cb_New_i(Fl_Menu_*, void*);
     inline void cb_Test_i(Fl_Menu_*, void*);
     inline void cb_Exit_i(Fl_Menu_*, void*);
+    inline void cb_Delete_i(Fl_Menu_*, void*);
     inline void cb_NewState_i(Fl_Button*, void*);
     inline void cb_NewTransition_i(Fl_Button*, void*);
 
@@ -48,6 +49,7 @@ private:
     static void cb_Open(Fl_Menu_*, void*);
     static void cb_Test(Fl_Menu_*, void*);
     static void cb_Exit(Fl_Menu_*, void*);
+    static void cb_Delete(Fl_Menu_*, void*);
     static void cb_NewState(Fl_Button*, void*);
     static void cb_NewTransition(Fl_Button*, void*);
 

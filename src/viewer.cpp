@@ -20,11 +20,12 @@ Fl_Menu_Item Viewer::mainMenu[] =
     { "E&xit", 0, (Fl_Callback*)Viewer::cb_Exit, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
     {0,0,0,0,0,0,0,0,0},
     { "&Edit", 0, 0, 0, (int)FL_SUBMENU, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
-    { "Undo", FL_CTRL+'Z', 0, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
-    { "Redo", FL_CTRL+'Y', 0, 0, (int)FL_MENU_DIVIDER, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
-    { "Cut", FL_CTRL+'X', 0, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
-    { "Copy", FL_CTRL+'C', 0, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
-    { "Paste", FL_CTRL+'V', 0, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
+    { "Undo", FL_CTRL+'z', 0, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
+    { "Redo", FL_CTRL+'y', 0, 0, (int)FL_MENU_DIVIDER, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
+    { "Cut", FL_CTRL+'x', 0, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
+    { "Copy", FL_CTRL+'c', 0, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
+    { "Paste", FL_CTRL+'v', 0, 0, (int)FL_MENU_DIVIDER, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
+    { "Delete", FL_Delete, (Fl_Callback*)Viewer::cb_Delete, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
     {0,0,0,0,0,0,0,0,0},
     { "Build", 0, 0, 0, (int)FL_SUBMENU, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
     { "C-code", 0, 0, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
@@ -60,6 +61,20 @@ void Viewer::cb_Test_i(Fl_Menu_*, void*)
 void Viewer::cb_Exit_i(Fl_Menu_*, void*)
 {
     this->topLevel->hide();
+}
+
+void Viewer::cb_Delete_i(Fl_Menu_*, void*)
+{
+    ComponentPict* cp = editor->selected_component();
+
+    if (cp)
+    {
+        cp->unselect();
+        editor->select_component(NULL);
+        cp->hide();
+        editor->remove(cp);
+        delete cp;
+    }
 }
 
 // Other control callbacks
@@ -112,6 +127,11 @@ void Viewer::cb_Test(Fl_Menu_* menu, void* data)
 void Viewer::cb_Exit(Fl_Menu_* menu, void* data)
 {
     ((Viewer*)(menu->parent()->user_data()))->cb_Exit_i(menu, data);
+}
+
+void Viewer::cb_Delete(Fl_Menu_* menu, void* data)
+{
+    ((Viewer*)(menu->parent()->user_data()))->cb_Delete_i(menu, data);
 }
 
 // Other control command callback helpers
