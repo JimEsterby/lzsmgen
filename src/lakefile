@@ -8,7 +8,7 @@ if package.config:sub(1,1) ~= '/' then
     DEFS = WIN32
 end
 
-cpp.program{'lzsmgen',
+cpp.program{'../bin/lzsmgen',
     src = '.',
     defines = DEFS,
     libs = LIBS

@@ -14,6 +14,8 @@ protected:
     int handle(int event);
     void draw();
     void center(int* x, int* y) const;
+    virtual int direction() const;
+    virtual void translate(int orientation);
     enum point_area { NA, cent, org, dest };
 
 private:

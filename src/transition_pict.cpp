@@ -35,7 +35,7 @@ void TransitionPict::transition_resize(int x1, int y1, int x2, int y2)
         {
             resize(x1 - margin, y1 - margin, margin * 2, y2 - y1 + margin * 2);
         }
-        else  // right to left
+        else  // bottom to top
         {
             resize(x2 - margin, y2 - margin, margin * 2, y1 - y2 + margin * 2);
         }
@@ -62,6 +62,7 @@ int TransitionPict::handle(int event)
 {
     static int offset[2] = { 0, 0 };
     static int rect[4] = { 0, 0, 0, 0 };
+    static int orient = right;
     static int drag_type = NA;
     int ev_x;
     int ev_y;
@@ -85,6 +86,7 @@ int TransitionPict::handle(int event)
             rect[1] = y_org;
             rect[2] = x_dest;
             rect[3] = y_dest;
+            orient = direction();
             drag_type = drag_area(ev_x, ev_y);
             result = 1;
             break;
@@ -100,15 +102,19 @@ int TransitionPict::handle(int event)
             if (drag_type == cent)
             {
                 position(offset[0] + ev_x, offset[1] + ev_y);
+                translate(orient);
+
+#if 0
                 transition_resize(rect[0] + offset[0] + ev_x,
                                   rect[1] + offset[1] + ev_y,
                                   rect[2] + offset[0] + ev_x,
                                   rect[3] + offset[1] + ev_y);
 
-                x_org = rect[0] + offset[0] + ev_x;
-                y_org = rect[1] + offset[1] + ev_y;
-                x_dest = rect[2] + offset[0] + ev_x;
-                y_dest = rect[3] + offset[1] + ev_y;
+                x_org = rect[0] + offset[0];
+                y_org = rect[1] + offset[1];
+                x_dest = rect[2] + offset[0];
+                y_dest = rect[3] + offset[1];
+#endif
             }
             else if (drag_type == org)
             {
@@ -173,6 +179,98 @@ void TransitionPict::center(int* x, int* y) const
     else
     {
         *x = (x_org - x_dest)/2 + x_dest;
+    }
+}
+
+// Returns the direction that transition is pointing
+// Uses the "border" enum
+int TransitionPict::direction() const
+{
+    int result = right;
+
+    // Is horizontal
+    if (y_org == y_dest)
+    {
+        if (x_org > x_dest)  // right to left
+        {
+            result = left;
+        }
+
+        // else result = right
+    }
+
+    // Is vertical
+    else if (x_org == x_dest)
+    {
+        if (y_dest > y_org)  // top to bottom
+        {
+            result = bottom;
+        }
+        else  // bottom to top
+        {
+            result = top;
+        }
+    }
+
+    else if (x_dest > x_org && y_dest > y_org)  // point to lower right
+    {
+        result = bottom_right;
+    }
+    else if (x_dest > x_org && y_org > y_dest)  // point to upper right
+    {
+        result = top_right;
+    }
+    else if (x_org > x_dest && y_dest > y_org)  // point to lower left
+    {
+        result = bottom_left;
+    }
+    else  // assume point to upper left
+    {
+        result = top_left;
+    }
+
+    return result;
+}
+
+void TransitionPict::translate(int orientation)
+{
+    switch (orientation)
+    {
+    case right:
+    case bottom:
+    case bottom_right:
+        x_org = x() + margin;
+        y_org = y() + margin;
+        x_dest = x() + w() - margin;
+        y_dest = y() + h() - margin;
+        break;
+
+    case left:
+    case top:
+    case top_left:
+        x_dest = x() + margin;
+        y_dest = y() + margin;
+        x_org = x() + w() - margin;
+        y_org = y() + h() - margin;
+        break;
+
+    case top_right:
+        x_org = x() + margin;
+        y_org = y() + h() - margin;
+        x_dest = x() + w() - margin;
+        y_dest = y() + margin;
+        break;
+
+    case bottom_left:
+        x_org = x() + w() - margin;
+        y_org = y() + margin;
+        x_dest = x() + margin;
+        y_dest = y() + h() - margin;
+        break;
+
+    default:
+        // do nothing
+        break;
     }
 }
 
