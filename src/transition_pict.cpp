@@ -7,6 +7,8 @@
 TransitionPict::TransitionPict(int x, int y, int w, int h, const char* name)
 : ComponentPict(x, y, w, h, name)
 {
+    labelsize(12);
+    align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
     x_org = x + margin;
     y_org = y + margin;
     x_dest = x + w - margin;
@@ -94,6 +96,7 @@ int TransitionPict::handle(int event)
         case FL_RELEASE:
             // Clear the other selections in the parent editor
             ed = (DiagramEditor*)parent();
+            ed->clear_selections();
             ed->select_component(this);
             result = 1;
             break;
@@ -126,6 +129,15 @@ int TransitionPict::handle(int event)
 
 void TransitionPict::draw()
 {
+    int x_center;
+    int y_center;
+
+    // Clear selection boxes
+    center(&x_center, &y_center);
+    draw_selection_box(x_org, y_org, 2, parent()->color());
+    draw_selection_box(x_center, y_center, 2, parent()->color());
+    draw_selection_box(x_dest, y_dest, 2, parent()->color());
+
     draw_label();
     fl_begin_line();
     fl_vertex(x_org, y_org);
@@ -135,12 +147,7 @@ void TransitionPict::draw()
 
     if (is_selected())
     {
-        int x_center;
-        int y_center;
-
-        center(&x_center, &y_center);
-
-        // Little red box around the origin of the transition
+        // Draw selection boxes
         draw_selection_box(x_org, y_org, 2, FL_RED);
         draw_selection_box(x_center, y_center, 2, FL_RED);
         draw_selection_box(x_dest, y_dest, 2, FL_RED);

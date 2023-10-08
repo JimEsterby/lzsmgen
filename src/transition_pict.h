@@ -7,7 +7,7 @@
 class TransitionPict : public ComponentPict
 {
 public:
-    TransitionPict(int x, int y, int w, int h, const char* name = 0);
+    TransitionPict(int x, int y, int w, int h, const char* name = "event");
     void transition_resize(int x1, int y1, int x2, int y2);
 
 protected:

@@ -7,7 +7,7 @@
 class StatePict : public ComponentPict
 {
 public:
-    StatePict(int x, int y, int w, int h, const char* name = 0);
+    StatePict(int x, int y, int w, int h, const char* name = "state");
     StatePict(int x, int y, const char* name = 0);
 
 protected:

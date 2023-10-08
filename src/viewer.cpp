@@ -80,10 +80,10 @@ void Viewer::cb_Delete_i(Fl_Menu_*, void*)
 // Other control callbacks
 void Viewer::cb_NewState_i(Fl_Button* btn, void* data)
 {
-    StatePict* sp = new StatePict(10, 10, 75, 45, "state");
+    StatePict* sp = new StatePict(10, 10, 75, 45);
 
-     editor->add((Fl_Widget*) sp);
-     editor->redraw();
+    editor->add((Fl_Widget*) sp);
+    editor->redraw();
 }
 
 void Viewer::cb_NewTransition_i(Fl_Button*, void*)

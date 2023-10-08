@@ -68,6 +68,7 @@ int StatePict::handle(int event)
 	
 	    case FL_RELEASE:
             // Clear the other selections in the parent editor
+			ed->clear_selections();
 			ed->select_component(this);
             fl_cursor(FL_CURSOR_DEFAULT);
 
@@ -177,6 +178,11 @@ int StatePict::handle(int event)
 
 void StatePict::draw()
 {
+	// erase selection rectangle
+	Fl_Color c = fl_color();
+	fl_rect(x(), y(), w(), h(), this->parent()->color());
+	fl_color(c);
+
 	draw_box();
 	draw_label();
 
