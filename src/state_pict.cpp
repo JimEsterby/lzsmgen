@@ -3,6 +3,7 @@
 #include <FL/Fl_Window.H>
 #include <FL/fl_draw.H>
 #include "diagram_editor.h"
+#include <FL/fl_ask.H>  // Temporary
 
 StatePict::StatePict(int x, int y, int w, int h, const char* name)
 : ComponentPict(x, y, w < minimum_size? minimum_size : w, h < minimum_size? minimum_size : h, name)
@@ -37,6 +38,9 @@ int StatePict::handle(int event)
 
 	if (event == FL_ENTER)
 	{
+		// Clear mouse click events
+		Fl::event_clicks(0);
+		
 		// Adjust cursor based on mouse location
 		(void)mouse_loc();
 	}
@@ -52,7 +56,12 @@ int StatePict::handle(int event)
 	}
 
     if (FL_LEFT_MOUSE == Fl::event_button())
-    {	
+    {
+		if (Fl::event_clicks())
+		{
+			fl_alert("Constructing state dialog");
+		}
+
 	    switch (event)
 	    {
 	    case FL_PUSH:

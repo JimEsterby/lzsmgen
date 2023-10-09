@@ -3,11 +3,14 @@
 
 #include "component_pict.h"
 
+class CTransition;
+
 // Rendering (picture) of state machine transition
 class TransitionPict : public ComponentPict
 {
 public:
-    TransitionPict(int x, int y, int w, int h, const char* name = "event");
+    TransitionPict(int x, int y, int w, int h, const char* condition = "event");
+    virtual ~TransitionPict();
     void transition_resize(int x1, int y1, int x2, int y2);
 
 protected:
@@ -23,6 +26,8 @@ private:
     int y_org;
     int x_dest;
     int y_dest;
+
+    CTransition* data;  // data access
 
     static const int margin = 5;
     double angle;  // degrees, NOT radians

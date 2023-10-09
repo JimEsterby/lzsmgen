@@ -1,18 +1,35 @@
 #include "transition_pict.h"
 #include "diagram_editor.h"
+#include "data_callback.h"
 #include <FL/fl_draw.H>
 #include <FL/Fl.H>
 #include<cmath>
+#include <FL/fl_ask.H>  // Temporary
+#include "transition_dlg.h"
 
-TransitionPict::TransitionPict(int x, int y, int w, int h, const char* name)
-: ComponentPict(x, y, w, h, name)
+TransitionPict::TransitionPict(int x, int y, int w, int h, const char* condition)
+: ComponentPict(x, y, w, h, condition)
 {
+    std::array<int, 4> position;
     labelsize(12);
     align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
     x_org = x + margin;
     y_org = y + margin;
     x_dest = x + w - margin;
     y_dest = y + h - margin;
+
+    position[0] = x_org;
+    position[1] = y_org;
+    position[2] = x_dest;
+    position[3] = y_dest;
+
+    data = data_callback->create_transition(condition, position);
+}
+
+TransitionPict::~TransitionPict()
+{
+    data_callback->destroy_transition(data);
+    delete data;
 }
 
 void TransitionPict::transition_resize(int x1, int y1, int x2, int y2)
@@ -76,8 +93,21 @@ int TransitionPict::handle(int event)
     ev_x = Fl::event_x();
     ev_y = Fl::event_y();
 
+    if (event == FL_ENTER)
+    {
+        // Clear the mouse clicks
+        Fl::event_clicks(0);
+    }
+
     if (FL_LEFT_MOUSE == Fl::event_button())
-    {	
+    {
+        if (Fl::event_clicks())
+        {
+            Fl::event_clicks(0);
+            TransitionDialog* td = new TransitionDialog(data);
+            td->show();
+        }
+
         switch (event)
         {
         case FL_PUSH:
@@ -119,6 +149,9 @@ int TransitionPict::handle(int event)
             }
 
             ((Fl_Window*)parent())->redraw();
+
+            // Update data
+            data->resize(x_org, y_org, x_dest, y_dest);
             result = 1;
             break;
         }

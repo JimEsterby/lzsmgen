@@ -2,6 +2,8 @@
 #define DATA_CALLBACK_H
 
 #include "diagram.h"
+#include "ctransition.h"
+#include "cstate.h"
 
 class DataCallback
 {
@@ -10,6 +12,13 @@ public:
     ~DataCallback();
 
     Diagram* get_diagram() const;
+    Diagram* create_diagram();
+    CTransition* create_transition(const char* event,
+                                   std::array<int, 4> position,
+                                   const char* name = "transition",
+                                   int priority = 0);
+    void destroy_transition(CTransition* ct);
+
 };
 
 // The controller will create this for viewer use
