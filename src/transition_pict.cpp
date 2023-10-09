@@ -106,6 +106,7 @@ int TransitionPict::handle(int event)
             Fl::event_clicks(0);
             TransitionDialog* td = new TransitionDialog(data);
             td->show();
+            label(data->condition());
         }
 
         switch (event)
