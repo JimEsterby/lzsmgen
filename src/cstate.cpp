@@ -21,6 +21,11 @@ CState::~CState()
     delete m_entry_action;
 }
 
+void CState::name(const char* text)
+{
+    m_name->assign(text);
+}
+
 void CState::during_action(const char* text)
 {
     m_during_action->assign(text);
@@ -29,6 +34,18 @@ void CState::during_action(const char* text)
 void CState::entry_action(const char* text)
 {
     m_entry_action->assign(text);
+}
+
+const char* CState::name() const
+{
+    const char* result = NULL;
+
+    if (!m_name->empty())
+    {
+        result = m_name->c_str();
+    }
+
+    return result;
 }
 
 const char* CState::during_action() const

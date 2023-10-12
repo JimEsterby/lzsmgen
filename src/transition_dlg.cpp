@@ -17,23 +17,32 @@ TransitionDialog::TransitionDialog(CTransition* ct)
         {
             name->value(ct->name());
         }
+        name->labelsize(12);
+        name->textsize(12);
 
         priority = new Fl_Value_Input(80, 56, 35, 24, "Priority:");
         priority->maximum(40);
         priority->step(1);
         priority->value(ct->priority());
+        priority->labelsize(12);
         
         condition = new Fl_Text_Editor(80, 95, 220, 75, "Condition:");
         condition_buf = new Fl_Text_Buffer;
         condition->buffer(condition_buf);
         condition->align(Fl_Align(FL_ALIGN_LEFT_TOP));
         condition_buf->text(ct->condition());
+        condition->textsize(12);
+        condition->labelsize(12);
+        condition->textfont(FL_COURIER);
 
         action = new Fl_Text_Editor(80, 190, 220, 95, "Transition\nAction:");
         action_buf = new Fl_Text_Buffer;
         action->buffer(action_buf);
         action->align(Fl_Align(FL_ALIGN_LEFT_TOP));
         action_buf->text(ct->action());
+        action->textsize(12);
+        action->labelsize(12);
+        action->textfont(FL_COURIER);
         
         Fl_Group::current()->resizable(action);
         
@@ -47,11 +56,13 @@ TransitionDialog::TransitionDialog(CTransition* ct)
             btn_cancel->color((Fl_Color)91);
             btn_cancel->user_data((void*)this);
             btn_cancel->callback((Fl_Callback*)TransitionDialog::cb_Cancel);
+            btn_cancel->labelsize(12);
             
             Fl_Button* btn_okay = new Fl_Button(230, 300, 70, 25, "OK");
             btn_okay->user_data((void*)this);
             btn_okay->color((Fl_Color)79);
             btn_okay->callback((Fl_Callback*)TransitionDialog::cb_OK);
+            btn_okay->labelsize(12);
         }
         g_btn->end();
     }
@@ -61,7 +72,7 @@ TransitionDialog::TransitionDialog(CTransition* ct)
 
 void TransitionDialog::show()
 {
-	mainWin->show();
+    mainWin->show();
 
     while (mainWin->shown())
     {

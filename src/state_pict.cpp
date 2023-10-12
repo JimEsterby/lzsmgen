@@ -3,24 +3,47 @@
 #include <FL/Fl_Window.H>
 #include <FL/fl_draw.H>
 #include "diagram_editor.h"
-#include <FL/fl_ask.H>  // Temporary
+#include "data_callback.h"
+#include "state_dlg.h"
 
 StatePict::StatePict(int x, int y, int w, int h, const char* name)
 : ComponentPict(x, y, w < minimum_size? minimum_size : w, h < minimum_size? minimum_size : h, name)
 {
+	std::array<int, 4> position;
     box(FL_ROUNDED_BOX);
     align(Fl_Align(FL_ALIGN_TOP|FL_ALIGN_INSIDE));
     color((Fl_Color)215);  // light yellow
     labelsize(12);
+
+	position[0] = x;
+	position[1] = y;
+	position[2] = x + w;
+	position[3] = y + h;
+
+	data = data_callback->create_state(name, position);
 }
 
 StatePict::StatePict(int x, int y, const char* name)
 : ComponentPict(x, y, minimum_size, minimum_size, name)
 {
+	std::array<int, 4> position;
     box(FL_ROUNDED_BOX);
     align(Fl_Align(FL_ALIGN_TOP|FL_ALIGN_INSIDE));
     color((Fl_Color)215);  // light yellow
     labelsize(12);
+
+	position[0] = x;
+	position[1] = y;
+	position[2] = x + minimum_size;
+	position[3] = y + minimum_size;
+
+	data = data_callback->create_state(name, position);
+}
+
+StatePict::~StatePict()
+{
+	data_callback->destroy_state(data);
+	delete data;
 }
 
 int StatePict::handle(int event)
@@ -40,7 +63,7 @@ int StatePict::handle(int event)
 	{
 		// Clear mouse click events
 		Fl::event_clicks(0);
-		
+
 		// Adjust cursor based on mouse location
 		(void)mouse_loc();
 	}
@@ -59,7 +82,10 @@ int StatePict::handle(int event)
     {
 		if (Fl::event_clicks())
 		{
-			fl_alert("Constructing state dialog");
+			Fl::event_clicks(0);
+			StateDialog* sd = new StateDialog(data);
+			sd->show();
+			label(data->name());
 		}
 
 	    switch (event)
