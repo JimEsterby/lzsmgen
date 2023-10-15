@@ -4,6 +4,7 @@ DiagramEditor::DiagramEditor(int x, int y, int w, int h, const char* name)
 : Fl_Scroll(x, y, w, h, name)
 {
     color(backcolor);
+    m_changed = false;
 }
 
 void DiagramEditor::clear_selections()

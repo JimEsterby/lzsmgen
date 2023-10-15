@@ -85,7 +85,12 @@ int StatePict::handle(int event)
 			Fl::event_clicks(0);
 			StateDialog* sd = new StateDialog(data);
 			sd->show();
-			label(data->name());
+			if (sd->OK_pressed())
+			{
+				label(data->name());
+				ed->set_changed();
+			}
+			delete sd;
 		}
 
 	    switch (event)
@@ -203,8 +208,9 @@ int StatePict::handle(int event)
 	            break;
 	        }
 	
-	        ((Fl_Window*)parent())->redraw();
+	        ed->redraw();
 			data->resize(x(), y(), x() + w(), y() + h());
+			ed->set_changed();
 	        result = 1;
 	    }
     }

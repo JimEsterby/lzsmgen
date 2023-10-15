@@ -92,6 +92,7 @@ int TransitionPict::handle(int event)
 
     ev_x = Fl::event_x();
     ev_y = Fl::event_y();
+    ed = (DiagramEditor*)parent();
 
     if (event == FL_ENTER)
     {
@@ -106,7 +107,12 @@ int TransitionPict::handle(int event)
             Fl::event_clicks(0);
             TransitionDialog* td = new TransitionDialog(data);
             td->show();
-            label(data->condition());
+            if (td->OK_pressed())
+            {
+                ed->set_changed();
+                label(data->condition());
+            }
+            delete td;  // Needed?
         }
 
         switch (event)
@@ -126,7 +132,6 @@ int TransitionPict::handle(int event)
 
         case FL_RELEASE:
             // Clear the other selections in the parent editor
-            ed = (DiagramEditor*)parent();
             ed->clear_selections();
             ed->select_component(this);
             result = 1;
@@ -149,7 +154,8 @@ int TransitionPict::handle(int event)
                 transition_resize(rect[0], rect[1], ev_x, ev_y);
             }
 
-            ((Fl_Window*)parent())->redraw();
+            ed->redraw();
+            ed->set_changed();
 
             // Update data
             data->resize(x_org, y_org, x_dest, y_dest);

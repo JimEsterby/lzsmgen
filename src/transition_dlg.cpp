@@ -8,6 +8,7 @@
 TransitionDialog::TransitionDialog(CTransition* ct)
 {
     m_data = ct;
+    m_OK_pressed = false;
 
     mainWin = new Fl_Double_Window(331, 337, "Transition Properties");
     mainWin->user_data((void*)(this));
@@ -92,6 +93,7 @@ void TransitionDialog::cb_Cancel(Fl_Button* btn, void* data)
 
 void TransitionDialog::cb_OK_i(Fl_Button* btn, void* data)
 {
+    m_OK_pressed = true;
     m_data->action(action_buf->text());
     m_data->condition(condition_buf->text());
     m_data->name(name->value());

@@ -43,16 +43,36 @@ Fl_Menu_Item Viewer::mainMenu[] =
 // Callback methods
 
 // Menu command callbacks
-void Viewer::cb_New_i(Fl_Menu_*, void*)
+void Viewer::cb_New_i(Fl_Menu_* menu, void* data)
 {
-    fl_alert("New command");
+    if (editor->changed())
+    {
+        // Allow user to cancel
+        if (fl_choice("Lose unsaved changes?",
+                      "Cancel", "Lose Changes", NULL) == 0)
+        {
+            return;
+        }         
+    }
+
+    editor->clear();
+    editor->reset_changed();
+    editor->redraw();
 }
 
 void Viewer::cb_Save_i(Fl_Menu_* menu, void* data)
 {
     if (file_callback->loaded())
     {
-        file_callback->save();
+        if (file_callback->save() == true)
+        {
+            // No unsaved changes
+            editor->reset_changed();
+        }
+        else
+        {
+            fl_alert("Failed to save %s.", file_callback->name());
+        }
     }
     else
     {
@@ -81,6 +101,11 @@ void Viewer::cb_SaveAs_i(Fl_Menu_*, void*)
         if (file_callback->save(file_name) == false)
         {
             fl_alert("Failed to save %s.", file_name);
+        }
+        else  // Save was successful
+        {
+            // No unsaved changes
+            editor->reset_changed();
         }
     }
 }
@@ -111,6 +136,7 @@ void Viewer::cb_Delete_i(Fl_Menu_*, void*)
         cp->hide();
         editor->remove(cp);
         delete cp;
+        editor->set_changed();
     }
 }
 
@@ -121,6 +147,7 @@ void Viewer::cb_NewState_i(Fl_Button* btn, void* data)
 
     editor->add((Fl_Widget*) sp);
     editor->redraw();
+    editor->set_changed();
 }
 
 void Viewer::cb_NewTransition_i(Fl_Button*, void*)
@@ -128,6 +155,7 @@ void Viewer::cb_NewTransition_i(Fl_Button*, void*)
     TransitionPict* tp = new TransitionPict(10, 60, 75, 45);
     editor->add((Fl_Widget*) tp);
     editor->redraw();
+    editor->set_changed();
 }
 
 

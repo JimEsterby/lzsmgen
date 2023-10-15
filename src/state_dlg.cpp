@@ -5,6 +5,7 @@
 StateDialog::StateDialog(CState* cs)
 {
     m_data = cs;
+    m_OK_pressed = false;
 
     mainWin = new Fl_Double_Window(331, 337, "State Properties");
     mainWin->user_data((void*)(this));
@@ -98,6 +99,7 @@ void StateDialog::cb_OK(Fl_Button* btn, void* data)
 
 void StateDialog::cb_OK_i(Fl_Button* btn, void* data)
 {
+    m_OK_pressed = true;
     m_data->name(name->value());
     m_data->entry_action(entry_buf->text());
     m_data->during_action(during_buf->text());

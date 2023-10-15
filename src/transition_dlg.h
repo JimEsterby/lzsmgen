@@ -14,6 +14,7 @@ class TransitionDialog
 public:
     TransitionDialog(CTransition* ct);
     void show();
+    bool OK_pressed() const { return m_OK_pressed; }
 
 private:
     Fl_Double_Window *mainWin;
@@ -24,6 +25,7 @@ private:
     Fl_Text_Buffer *condition_buf;
     Fl_Text_Buffer *action_buf;
     CTransition* m_data;
+    bool m_OK_pressed;
 
     // callbacks
     static void cb_Cancel(Fl_Button*, void*);
