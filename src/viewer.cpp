@@ -15,8 +15,8 @@ Fl_Menu_Item Viewer::mainMenu[] =
     { "&File", 0,  0, 0, (int)FL_SUBMENU, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
     { "New", 0,  (Fl_Callback*)Viewer::cb_New, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
     { "Open...", 0, (Fl_Callback*)Viewer::cb_Open, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
-    { "Save", 0, 0, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
-    { "Save as...", 0, 0, 0, (int)FL_MENU_DIVIDER, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
+    { "Save", FL_CTRL+'s', (Fl_Callback*)Viewer::cb_Save, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
+    { "Save as...", FL_CTRL+'S', (Fl_Callback*)Viewer::cb_SaveAs, 0, (int)FL_MENU_DIVIDER, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
     { "E&xit", 0, (Fl_Callback*)Viewer::cb_Exit, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
     {0,0,0,0,0,0,0,0,0},
     { "&Edit", 0, 0, 0, (int)FL_SUBMENU, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
@@ -46,6 +46,43 @@ Fl_Menu_Item Viewer::mainMenu[] =
 void Viewer::cb_New_i(Fl_Menu_*, void*)
 {
     fl_alert("New command");
+}
+
+void Viewer::cb_Save_i(Fl_Menu_* menu, void* data)
+{
+    if (file_callback->loaded())
+    {
+        file_callback->save();
+    }
+    else
+    {
+        cb_SaveAs_i(menu, data);
+    }
+}
+
+void Viewer::cb_SaveAs_i(Fl_Menu_*, void*)
+{
+    char* file_name;
+
+    file_name = fl_file_chooser("Save diagram file as", "Diagram (*.json", NULL);
+
+    if (file_name)
+    {
+        if (file_callback->check_preexisting(file_name))
+        {
+            // Allow user to cancel
+            if (fl_choice("The file, %s, already exists.\nReplace?",
+                          "Cancel", "Replace", NULL, file_name) == 0)
+            {
+                return;
+            }
+        }
+
+        if (file_callback->save(file_name) == false)
+        {
+            fl_alert("Failed to save %s.", file_name);
+        }
+    }
 }
 
 void Viewer::cb_Test_i(Fl_Menu_*, void*)
@@ -117,6 +154,16 @@ void Viewer::cb_Open(Fl_Menu_* menu, void* data)
             fl_alert("Opened file %s", file_name);
         }
     }
+}
+
+void Viewer::cb_Save(Fl_Menu_* menu, void* data)
+{
+    ((Viewer*)(menu->parent()->user_data()))->cb_Save_i(menu, data);
+}
+
+void Viewer::cb_SaveAs(Fl_Menu_* menu, void* data)
+{
+    ((Viewer*)(menu->parent()->user_data()))->cb_SaveAs_i(menu, data);
 }
 
 void Viewer::cb_Test(Fl_Menu_* menu, void* data)

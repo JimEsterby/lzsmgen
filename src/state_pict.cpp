@@ -204,6 +204,7 @@ int StatePict::handle(int event)
 	        }
 	
 	        ((Fl_Window*)parent())->redraw();
+			data->resize(x(), y(), x() + w(), y() + h());
 	        result = 1;
 	    }
     }

@@ -8,10 +8,10 @@ CTransition::CTransition(const char* condition,
     m_name = new std::string(name);
     m_condition = new std::string(condition);
     m_action = new std::string();  // empty string
-    position[0] = x1;
-    position[1] = y1;
-    position[2] = x2;
-    position[3] = y2;
+    m_position[0] = x1;
+    m_position[1] = y1;
+    m_position[2] = x2;
+    m_position[3] = y2;
     m_priority = priority;
 }
 
@@ -75,8 +75,8 @@ const char* CTransition::name() const
 
 void CTransition::resize(int x1, int y1, int x2, int y2)
 {
-    position[0] = x1;
-    position[1] = y1;
-    position[2] = x2;
-    position[3] = y2;
+    m_position[0] = x1;
+    m_position[1] = y1;
+    m_position[2] = x2;
+    m_position[3] = y2;
 }

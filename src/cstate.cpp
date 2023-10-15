@@ -7,10 +7,10 @@ CState::CState(const char* name,
     m_name = new std::string(name);
     m_during_action = new std::string();  // empty string
     m_entry_action = new std::string();  // empty string
-    position[0] = x1;
-    position[1] = y1;
-    position[2] = x2;
-    position[3] = y2;
+    m_position[0] = x1;
+    m_position[1] = y1;
+    m_position[2] = x2;
+    m_position[3] = y2;
     isDefault = default_state;
 }
 
@@ -74,9 +74,9 @@ const char* CState::entry_action() const
 
 void CState::resize(int x1, int y1, int x2, int y2)
 {
-    position[0] = x1;
-    position[1] = y1;
-    position[2] = x2;
-    position[3] = y2;
+    m_position[0] = x1;
+    m_position[1] = y1;
+    m_position[2] = x2;
+    m_position[3] = y2;
 }
 

@@ -10,7 +10,7 @@ private:
     std::string* m_name;  // Becomes generated function
     std::string* m_condition;  // Event that triggers transition
     std::string* m_action;  // Action(s) to be taken when transition is triggered
-    std::array<int, 4> position;
+    std::array<int, 4> m_position;
     int m_priority;
 
 public:
@@ -27,6 +27,7 @@ public:
     const char* name() const;
     int priority() const { return m_priority; }
     void priority(int value) { m_priority = value; }
+    std::array<int, 4> position() const { return m_position; }
     void resize(int x1, int y1, int x2, int y2);
 };
 

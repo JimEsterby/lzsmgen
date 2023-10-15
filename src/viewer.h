@@ -39,6 +39,8 @@ private:
 
     // callbacks
     inline void cb_New_i(Fl_Menu_*, void*);
+    inline void cb_Save_i(Fl_Menu_*, void*);
+    inline void cb_SaveAs_i(Fl_Menu_*, void*);
     inline void cb_Test_i(Fl_Menu_*, void*);
     inline void cb_Exit_i(Fl_Menu_*, void*);
     inline void cb_Delete_i(Fl_Menu_*, void*);
@@ -47,6 +49,8 @@ private:
 
     static void cb_New(Fl_Menu_*, void*);
     static void cb_Open(Fl_Menu_*, void*);
+    static void cb_Save(Fl_Menu_*, void*);
+    static void cb_SaveAs(Fl_Menu_*, void*);
     static void cb_Test(Fl_Menu_*, void*);
     static void cb_Exit(Fl_Menu_*, void*);
     static void cb_Delete(Fl_Menu_*, void*);

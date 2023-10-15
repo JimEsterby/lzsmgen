@@ -10,7 +10,7 @@ private:
     std::string* m_name;
     std::string* m_entry_action;
     std::string* m_during_action;
-    std::array<int, 4> position;
+    std::array<int, 4> m_position;
     bool isDefault;
 
 public:
@@ -24,6 +24,7 @@ public:
     const char* during_action() const;
     const char* entry_action() const;
     const char* name() const;
+    std::array<int, 4> position() const { return m_position; }
     void resize(int x1, int y1, int x2, int y2);
     void set_default() { isDefault = true; }
     void set_not_default() { isDefault = false; }

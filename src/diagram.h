@@ -19,6 +19,8 @@ public:
     void add_transition(CTransition* transition);
     void remove_state(CState* state);
     void remove_transition(CTransition* transition);
+    std::list<CState*> state_list() const { return states; }
+    std::list<CTransition*> transition_list() const { return transitions; }
 };
 
 #endif
