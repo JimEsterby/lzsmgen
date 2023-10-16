@@ -18,6 +18,7 @@ public:
     const char* file_name() const;
     void file_name(const char* name);
     bool save_file();
+    bool open_file(const char* name);
     bool file_exists(const char* name) const;
     bool io_failure() const { return failed_interpreter; }
 

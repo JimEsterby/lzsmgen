@@ -4,6 +4,7 @@ json = require 'lunajson'
 -- Empty tables
 states = {}
 transitions = {}
+diagram = {}
 
 --[[  file_exists()
 Check for the existence of a file. This solution can be found on
@@ -53,7 +54,7 @@ function create_transition(name, condition, action, priority, position)
 	table.insert(transitions, t)
 end
 
---[[  write_diagram
+--[[  write_diagram()
 Write the diagram information to file indicated by the argument name. The
 information is in JSON format. ]]
 function write_diagram(name)
@@ -63,7 +64,7 @@ function write_diagram(name)
 	t.transitions = transitions
 
 	--print("Writing " .. name)
-	f = io.open(name, "w")
+	local f = io.open(name, "w")
 	if io.type(f) == "file" then
 		f:write(json.encode(t) .. "\n")
 		f:close()
@@ -74,3 +75,74 @@ function write_diagram(name)
 
 	return result
 end
+
+--[[  read_diagram()
+Read contents of file indicated by argument name. If the file has correct
+JSON format, the global, diagram, will contain the file contents as a Lua
+table. ]]
+function read_diagram(name)
+	local result = false
+	local text
+
+	local f = io.open(name)
+	if io.type(f) == "file" then
+		text = f:read("a")
+		result, diagram = pcall(json.decode, text)
+		f:close()
+	else
+		print("Error: Read from file failure\n")
+	end
+
+	return result 
+end
+
+--[[  nr_states()
+Return the number of states in the diagram table. Assumes a valid diagram
+table. ]]
+function nr_states()
+	return #diagram.states
+end
+
+--[[  nr_transitions()
+Return the number of transitions in the diagram table. Assumes a valid diagram
+table. ]]
+function nr_transitions()
+	return #diagram.transitions
+end
+
+--[[  get_state()
+Return characteristics of an individual state in the diagram table. ]]
+function get_state(index)
+	local name
+	local entry  -- entry action
+	local during  -- during action
+	local position  -- location points
+	local default
+
+	name = diagram.states[index].name
+	entry = diagram.states[index].entry
+	during = diagram.states[index].during
+	position = diagram.states[index].position
+	default = diagram.states[index].default
+
+	return name, entry, during, default, position[1], position[2], position[3], position[4]
+end
+
+--[[  get_transition()
+Return individual transition in the diagram table. ]]
+function get_transition(index)
+	local name
+	local condition  -- trigger
+	local action  -- action
+	local position  -- location points
+	local priority
+
+	name = diagram.transitions[index].name
+	condition = diagram.transitions[index].condition
+	action = diagram.transitions[index].action
+	position = diagram.transitions[index].position
+	priority = diagram.transitions[index].priority
+
+	return name, condition, action, priority, position[1], position[2], position[3], position[4]
+end
+

@@ -2,6 +2,7 @@
 #define TRANSITION_PICT_H
 
 #include "component_pict.h"
+#include<array>
 
 class CTransition;
 
@@ -10,6 +11,7 @@ class TransitionPict : public ComponentPict
 {
 public:
     TransitionPict(int x, int y, int w, int h, const char* condition = "event");
+    TransitionPict(CTransition* ct);
     virtual ~TransitionPict();
     void transition_resize(int x1, int y1, int x2, int y2);
 
@@ -39,6 +41,12 @@ private:
 
     // Standard distance formula
     static double distance(int x1, int y1, int x2, int y2);
+
+    // Calculate screen dimensions from CTransition information
+    static int upper_left_x(std::array<int, 4> ct_pos);
+    static int upper_left_y(std::array<int, 4> ct_pos);
+    static int width(std::array<int, 4> ct_pos);
+    static int height(std::array<int, 4> ct_pos);
 
 };
 

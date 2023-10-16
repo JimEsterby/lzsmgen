@@ -10,7 +10,7 @@ public:
     ~FileCallback();
 
 
-    bool open_file_request(const char* file_name);
+    bool open(const char* file_name);
     bool check_preexisting(const char* file_name) const;
     bool loaded() const;  // A diagram file is loaded
     const char* name() const;  // file name

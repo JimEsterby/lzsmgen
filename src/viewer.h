@@ -12,7 +12,6 @@ class Viewer
 public:
     Viewer();
     void show(int argc, char *argv[]);
-    void wait_for_expose();  // TODO: Remove method
     int run();
 
 private:
@@ -39,6 +38,7 @@ private:
 
     // callbacks
     inline void cb_New_i(Fl_Menu_*, void*);
+    inline void cb_Open_i(Fl_Menu_*, void*);
     inline void cb_Save_i(Fl_Menu_*, void*);
     inline void cb_SaveAs_i(Fl_Menu_*, void*);
     inline void cb_Test_i(Fl_Menu_*, void*);

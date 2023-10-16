@@ -14,10 +14,10 @@ FileCallback::~FileCallback()
 }
 
 /* Method for opening a diagram file */
-bool FileCallback::open_file_request(const char* file_name)
+bool FileCallback::open(const char* file_name)
 {
     // Need to call "Model" code
-    return true;
+    return theModel->open_file(file_name);
 }
 
 // Check if file already exists

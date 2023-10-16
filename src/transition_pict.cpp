@@ -26,6 +26,22 @@ TransitionPict::TransitionPict(int x, int y, int w, int h, const char* condition
     data = data_callback->create_transition(condition, position);
 }
 
+TransitionPict::TransitionPict(CTransition* ct)
+: ComponentPict(upper_left_x(ct->position()),
+                upper_left_y(ct->position()),
+                width(ct->position()),
+                height(ct->position()),
+                ct->condition())
+{
+    data = ct;
+    labelsize(12);
+    align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
+    x_org = ct->position()[0];
+    y_org = ct->position()[1];
+    x_dest = ct->position()[2];
+    y_dest = ct->position()[3];
+}
+
 TransitionPict::~TransitionPict()
 {
     data_callback->destroy_transition(data);
@@ -436,4 +452,52 @@ double TransitionPict::distance(int x1, int y1, int x2, int y2)
     }
 
     return result; 
+}
+
+int TransitionPict::upper_left_x(std::array<int, 4> ct_pos)
+{
+    int retval = ct_pos[0] - margin;
+
+    if (ct_pos[2] < ct_pos[0])
+    {
+        retval = ct_pos[2] - margin;
+    }
+
+    return retval;
+}
+
+int TransitionPict::upper_left_y(std::array<int, 4> ct_pos)
+{
+    int retval = ct_pos[1] - margin;
+
+    if (ct_pos[3] < ct_pos[1])
+    {
+        retval = ct_pos[3] - margin;
+    }
+
+    return retval;
+}
+
+int TransitionPict::width(std::array<int, 4> ct_pos)
+{
+    int retval = 2 * margin + ct_pos[2] - ct_pos[0];
+
+    if (ct_pos[2] < ct_pos[0])
+    {
+        retval = 2 * margin + ct_pos[0] - ct_pos[2];
+    }
+
+    return retval;
+}
+
+int TransitionPict::height(std::array<int, 4> ct_pos)
+{
+    int retval = 2 * margin + ct_pos[2] - ct_pos[1];
+
+    if (ct_pos[3] < ct_pos[1])
+    {
+        retval = 2 * margin + ct_pos[1] - ct_pos[3];
+    }
+
+    return retval;
 }

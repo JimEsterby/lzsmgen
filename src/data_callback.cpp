@@ -15,7 +15,7 @@ DataCallback::~DataCallback()
 
 Diagram* DataCallback::get_diagram() const
 {
-    return nullptr;  // TODO
+    return theModel->diagram();
 }
 
 Diagram* DataCallback::create_diagram()

@@ -59,6 +59,99 @@ void Model::file_name(const char* name)
     m_diagram_file->assign(name);
 }
 
+bool Model::open_file(const char* name)
+{
+    int nr_states;
+    int nr_transitions;
+    bool result = false;
+
+    lua_getglobal(m_Lua, "read_diagram");
+    lua_pushstring(m_Lua, name);
+    if (LUA_OK == lua_pcall(m_Lua, 1, 1, 0))
+    {
+        result = lua_toboolean(m_Lua, 1);
+        lua_pop(m_Lua, 1);
+
+        lua_getglobal(m_Lua, "nr_states");
+        lua_call(m_Lua, 0, 1);
+        nr_states = lua_tointeger(m_Lua, 1);
+        lua_pop(m_Lua, 1);
+
+        lua_getglobal(m_Lua, "nr_transitions");
+        lua_call(m_Lua, 0, 1);
+        nr_transitions = lua_tointeger(m_Lua, 1);
+        lua_pop(m_Lua, 1);
+
+        std::printf("S=%d\tT=%d\n",nr_states,nr_transitions);
+
+        // Load states
+        for (int idx = 1; idx <= nr_states; idx++)
+        {
+            CState* cs;
+            const char* name;
+            const char* entry;
+            const char* during;
+            bool isDefault;
+            int x1, y1, x2, y2;
+
+            lua_getglobal(m_Lua, "get_state");
+            lua_pushinteger(m_Lua, idx);
+            lua_call(m_Lua, 1, 8);
+            name = lua_tostring(m_Lua, 1);
+            entry = lua_tostring(m_Lua, 2);
+            during = lua_tostring(m_Lua, 3);
+            isDefault = lua_toboolean(m_Lua, 4);
+            x1 = lua_tointeger(m_Lua, 5);
+            y1 = lua_tointeger(m_Lua, 6);
+            x2 = lua_tointeger(m_Lua, 7);
+            y2 = lua_tointeger(m_Lua, 8);
+
+            cs = new CState(name, x1, y1, x2, y2, isDefault);
+            cs->entry_action(entry);
+            cs->during_action(during);
+        
+            lua_pop(m_Lua, 8);
+
+            m_diagram->add_state(cs);
+        }
+
+        // Load transitions
+        for (int idx = 1; idx <= nr_transitions; idx++)
+        {
+            CTransition* ct;
+            const char* name;
+            const char* condition;
+            const char* action;
+            int priority;
+            int x1, y1, x2, y2;
+
+            lua_getglobal(m_Lua, "get_transition");
+            lua_pushinteger(m_Lua, idx);
+            lua_call(m_Lua, 1, 8);
+            name = lua_tostring(m_Lua, 1);
+            condition = lua_tostring(m_Lua, 2);
+            action = lua_tostring(m_Lua, 3);
+            priority = lua_tointeger(m_Lua, 4);
+            x1 = lua_tointeger(m_Lua, 5);
+            y1 = lua_tointeger(m_Lua, 6);
+            x2 = lua_tointeger(m_Lua, 7);
+            y2 = lua_tointeger(m_Lua, 8);
+
+            ct = new CTransition(condition, name, x1, y1, x2, y2, priority);
+            ct->action(action);
+        
+            lua_pop(m_Lua, 8);
+
+            m_diagram->add_transition(ct);
+        }
+
+        m_diagram_file->assign(name);
+        result = true;
+    }    
+
+    return result;
+}
+
 bool Model::save_file()
 {
     bool result = false;

@@ -60,6 +60,57 @@ void Viewer::cb_New_i(Fl_Menu_* menu, void* data)
     editor->redraw();
 }
 
+void Viewer::cb_Open_i(Fl_Menu_* menu, void* data)
+{
+    char* file_name;
+
+    if (editor->changed())
+    {
+        // Allow user to cancel
+        if (fl_choice("Lose unsaved changes?",
+                      "Cancel", "Lose Changes", NULL) == 0)
+        {
+            return;
+        }         
+    }
+
+    file_name = fl_file_chooser("Open diagram file", "Diagram (*.json", NULL);
+
+    if (file_name)
+    {
+        editor->clear();
+        
+        if (file_callback->open(file_name))
+        {
+            std::list<CState*> state;
+            std::list<CTransition*> transition;
+            Diagram* d = data_callback->get_diagram();
+            state = d->state_list();
+            transition = d->transition_list();
+
+            for (auto iter = state.begin(); iter != state.end(); iter++)
+            {
+                StatePict* sp = new StatePict(*iter);
+                editor->add((Fl_Widget*) sp);
+            }
+
+            for (auto iter = transition.begin(); iter != transition.end(); iter++)
+            {
+                TransitionPict* tp = new TransitionPict(*iter);
+                editor->add((Fl_Widget*) tp);
+            }
+
+            editor->redraw();
+            editor->reset_changed();
+        }
+        else
+        {
+            fl_alert("Problem reading or opening file:\n%s", file_name);
+        }
+    }
+
+}
+
 void Viewer::cb_Save_i(Fl_Menu_* menu, void* data)
 {
     if (file_callback->loaded())
@@ -169,19 +220,7 @@ void Viewer::cb_New(Fl_Menu_* menu, void* data)
 
 void Viewer::cb_Open(Fl_Menu_* menu, void* data)
 {
-    char* file_name;
-    //Viewer* v = (Viewer*)menu->parent()->user_data();
-
-    file_name = fl_file_chooser("Open diagram file", "Diagram (*.json", NULL);
-
-    if (file_name)
-    {
-        if (file_callback->open_file_request(file_name))
-        {
-            // TODO
-            fl_alert("Opened file %s", file_name);
-        }
-    }
+    ((Viewer*)(menu->parent()->user_data()))->cb_Open_i(menu, data);
 }
 
 void Viewer::cb_Save(Fl_Menu_* menu, void* data)

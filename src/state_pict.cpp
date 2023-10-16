@@ -40,6 +40,20 @@ StatePict::StatePict(int x, int y, const char* name)
 	data = data_callback->create_state(name, position);
 }
 
+StatePict::StatePict(CState* cs)
+: ComponentPict(cs->position()[0],
+                cs->position()[1],
+				cs->position()[2] - cs->position()[0],
+				cs->position()[3] - cs->position()[1],
+				cs->name())
+{
+	data = cs;
+    box(FL_ROUNDED_BOX);
+    align(Fl_Align(FL_ALIGN_TOP|FL_ALIGN_INSIDE));
+    color((Fl_Color)215);  // light yellow
+    labelsize(12);
+}
+
 StatePict::~StatePict()
 {
 	data_callback->destroy_state(data);
