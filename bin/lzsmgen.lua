@@ -6,6 +6,14 @@ states = {}
 transitions = {}
 diagram = {}
 
+--[[  reset
+Reset global variables. ]]
+function reset()
+	states = {}
+	transitions = {}
+	diagram = {}
+end
+
 --[[  file_exists()
 Check for the existence of a file. This solution can be found on
 stackoverflow.com. It's a fairly obvious implementation. It might be better to

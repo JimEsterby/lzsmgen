@@ -32,7 +32,6 @@ private:
     CTransition* data;  // data access
 
     static const int margin = 5;
-    double angle;  // degrees, NOT radians
     static const int arrow_head = 10;
     static const int grab_area = 10;
 

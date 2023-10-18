@@ -2,7 +2,7 @@
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Button.H>
 #include "transition_dlg.h"
-#include <FL/Fl_ask.H>
+#include <FL/fl_ask.H>
 
 
 TransitionDialog::TransitionDialog(CTransition* ct)

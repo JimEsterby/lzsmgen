@@ -147,7 +147,9 @@ bool Model::open_file(const char* name)
 
         m_diagram_file->assign(name);
         result = true;
-    }    
+    }
+
+    reset_script();   
 
     return result;
 }
@@ -190,6 +192,8 @@ bool Model::save_file()
         result = lua_toboolean(m_Lua, 1);
         lua_pop(m_Lua, 1);
     }
+
+    reset_script();
 
     return result;
 }
@@ -251,4 +255,10 @@ void Model::pushlocation(std::array<int, 4> position)
     lua_pushinteger(m_Lua, position[2]);
     lua_pushinteger(m_Lua, position[3]);
     lua_call(m_Lua, 4, 1);  // One result at the top of the stack
+}
+
+void Model::reset_script()
+{
+    lua_getglobal(m_Lua, "reset");
+    lua_call(m_Lua, 0, 0);
 }

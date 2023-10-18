@@ -31,6 +31,7 @@ private:
 
     void pushstring(const char* text);
     void pushlocation(std::array<int, 4> position);
+    void reset_script();  // Reset script globals
 };
 
 extern Model* theModel;

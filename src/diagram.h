@@ -21,6 +21,8 @@ public:
     void remove_transition(CTransition* transition);
     std::list<CState*> state_list() const { return states; }
     std::list<CTransition*> transition_list() const { return transitions; }
+    int state_count() const;
+    int transition_count() const;
 };
 
 #endif

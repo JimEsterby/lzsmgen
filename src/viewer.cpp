@@ -79,7 +79,7 @@ void Viewer::cb_Open_i(Fl_Menu_* menu, void* data)
     if (file_name)
     {
         editor->clear();
-        
+
         if (file_callback->open(file_name))
         {
             std::list<CState*> state;
@@ -163,12 +163,17 @@ void Viewer::cb_SaveAs_i(Fl_Menu_*, void*)
 
 void Viewer::cb_Test_i(Fl_Menu_*, void*)
 {
+    int states = data_callback->get_diagram()->state_count();
+    int transitions = data_callback->get_diagram()->transition_count();
+    /*
     fl_alert("Editor children = %d", editor->children());
     for (int i = 0; i < editor->children(); i++)
     {
         editor->child(i)->damage(FL_DAMAGE_CHILD);
     }
-    editor->redraw();
+    editor->redraw();*/
+
+    fl_alert("We have %d pictures and\n%d objects.", editor->children() - 2, states + transitions);
 }
 
 void Viewer::cb_Exit_i(Fl_Menu_*, void*)

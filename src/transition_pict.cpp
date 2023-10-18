@@ -492,7 +492,7 @@ int TransitionPict::width(std::array<int, 4> ct_pos)
 
 int TransitionPict::height(std::array<int, 4> ct_pos)
 {
-    int retval = 2 * margin + ct_pos[2] - ct_pos[1];
+    int retval = 2 * margin + ct_pos[3] - ct_pos[1];
 
     if (ct_pos[3] < ct_pos[1])
     {
