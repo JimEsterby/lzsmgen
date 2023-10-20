@@ -5,6 +5,7 @@ DiagramEditor::DiagramEditor(int x, int y, int w, int h, const char* name)
 {
     color(backcolor);
     m_changed = false;
+    m_selected = 0;
 }
 
 void DiagramEditor::clear_selections()
@@ -21,19 +22,21 @@ void DiagramEditor::clear_selections()
             cp->redraw();
         }
     }
+
+    m_selected = 0;
 }
 
 void DiagramEditor::select_component(ComponentPict* cp)
 {
-    if (selected)
+    if (m_selected)
     {
-        selected->unselect();
-        selected->redraw();
+        m_selected->unselect();
+        m_selected->redraw();
     }
-    selected = cp;
+    m_selected = cp;
     if (cp)
     {
-        selected->select();
-        selected->redraw();
+        m_selected->select();
+        m_selected->redraw();
     }
 }

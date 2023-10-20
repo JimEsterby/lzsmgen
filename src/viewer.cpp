@@ -55,6 +55,7 @@ void Viewer::cb_New_i(Fl_Menu_* menu, void* data)
         }         
     }
 
+    editor->clear_selections();
     editor->clear();
     editor->reset_changed();
     editor->redraw();
@@ -78,6 +79,7 @@ void Viewer::cb_Open_i(Fl_Menu_* menu, void* data)
 
     if (file_name)
     {
+        editor->clear_selections();
         editor->clear();
 
         if (file_callback->open(file_name))
