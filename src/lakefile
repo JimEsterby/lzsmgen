@@ -1,16 +1,101 @@
 -- Build script for state machine generator
 
--- Distinguish between Windows and Linux by checking path separator
-LIBS = { 'fltk', 'lua54', 'gcov' }
-DEFS = '__LINUX__'
-if package.config:sub(1,1) ~= '/' then
-    LIBS = {'fltk', 'lua54', 'ole32', 'gdi32', 'uuid', 'comctl32', 'gcov' }
-    DEFS = { 'WIN32', '_WIN32' }
+APP = '../bin/lzsmgen'
+TEST_APP = '../bin/test_lzsmgen'
+CLEAN_TARGETS = APP .. TEST_APP
+RELDIR = '../release/*.*'
+DBDIR = '../debug/*.*'
+
+LIBS = { 'fltk', 'lua54' }
+DEFS = { '__LINUX__', 'NDEBUG' }
+OBJS = '../release'
+COMPILE_FLAGS = { }
+MAIN_FLAGS = { }
+COVERAGE_FLAGS = { '-ftest-coverage', '-fprofile-arcs' }
+ALL_FLAGS = { '-ftest-coverage',
+    '-fprofile-arcs',
+    '-include CppUTest/MemoryLeakDetectorNewMacros.h',
+    '-include CppUTest/MemoryLeakDetectorMallocMacros.h'
+}
+RM = 'rm'
+
+-- Set DEBUG to true if we're building the test application
+for x = 1, #arg do
+    if arg[x] == 'test' then
+        lake.set_flags{DEBUG=true}
+    end
 end
 
-cpp.program{'../bin/lzsmgen',
-    src = '.',
+
+if DEBUG == true then
+    LIBS = { 'fltk', 'lua54', 'gcov', 'CppUTest', 'CppUTestExt' }
+    DEFS = { '__LINUX__', 'DEBUG' }
+    OBJS = '../debug'
+    COMPILE_FLAGS = ALL_FLAGS
+    MAIN_FLAGS = COVERAGE_FLAGS
+end
+
+
+-- Distinguish between Windows and Linux by checking path separator
+if package.config:sub(1,1) ~= '/' then
+    -- Add Win32 libraries
+    table.insert( LIBS, 3, 'ole32' )
+    table.insert( LIBS, 4, 'gdi32' )
+    table.insert( LIBS, 5, 'uuid' )
+    table.insert( LIBS, 6, 'comctl32' )
+    DEFS = { 'WIN32', '_WIN32', }
+    if DEBUG == true then
+        table.insert( DEFS, 'DEBUG' )
+    else
+        table.insert( DEFS, 'NDEBUG' )
+    end
+    RM = 'del /q'
+    CLEAN_TARGETS = [[..\bin\lzsmgen.exe]] .. [[ ..\bin\test_lzsmgen.exe]]
+    RELDIR = [[..\release\*.*]]
+    DBDIR = [[..\debug\*.*]]
+end
+
+
+-- Include everything except "main"
+objectsd = cpp.group{'objectsd',
+    src = '*',
+    exclude = 'main',
     defines = DEFS,
-    cflags = { '-ftest-coverage', '-fprofile-arcs' },
+    cflags = COMPILE_FLAGS,
+    odir = OBJS
+}
+
+maind = cpp.group{'maind',
+    src = 'main',
+    defines = DEFS,
+    cflags = MAIN_FLAGS,
+    odir = OBJS
+}
+
+test = cpp.group{'test',
+    src = '../test',
+    cflags = { '-include CppUTest/MemoryLeakDetectorNewMacros.h',
+        '-include CppUTest/MemoryLeakDetectorMallocMacros.h'
+    },
+    incdir = '../src',
+    odir = '../test/objs'
+}
+
+lzsmgend = cpp.program{ APP,
+    inputs = { maind, objectsd },
     libs = LIBS
 }
+
+cxxtest = cpp.program{ TEST_APP,
+    inputs = { test, objectsd },
+    libs = LIBS
+}:run()
+
+rm_release = target('rm_release', nil, RM .. ' ' .. RELDIR)
+rm_debug = target('rm_debug', nil, RM .. ' ' .. DBDIR)
+rm_objects = target('cleanobj', { rm_release, rm_debug })
+target('clean', rm_objects, RM .. ' ' .. CLEAN_TARGETS)
+
+target('test', cxxtest)
+
+default { lzsmgend }

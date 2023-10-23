@@ -5,6 +5,29 @@ extern "C" {
 }
 #include<cstdio>
 
+///// Test Area
+#ifdef DEBUG
+// kludge to enable a sort of mocking
+#undef luaL_loadfile
+#define luaL_loadfile(L, fn)  mock_luaL_loadfilex(L, fn, __null)
+static bool script_load_fail = false;
+void simulate_script_load_failure(bool value)
+{
+    script_load_fail = value;
+}
+extern "C" int mock_luaL_loadfilex(lua_State *L, const char *filename, const char *access)
+{
+    int result = 1;
+    if (script_load_fail == false)
+    {
+        result = luaL_loadfilex(L, filename, access);
+    }
+
+    return result;
+}
+#endif
+///// End of Test Area
+
 Model* theModel;
 
 Model::Model()
@@ -204,11 +227,19 @@ bool Model::file_exists(const char* name) const
 {
     bool result;
 
-    lua_getglobal(m_Lua, "file_exists");  // stack +1
-    lua_pushstring(m_Lua, name);  // stack +2
-    lua_call(m_Lua, 1 , 1);  // stack +1
-    result = lua_toboolean(m_Lua, 1);  // stack +1
-    lua_pop(m_Lua, 1);  // stack 0
+    if (failed_interpreter)
+    {
+        result = false;
+    }
+
+    else
+    {
+        lua_getglobal(m_Lua, "file_exists");  // stack +1
+        lua_pushstring(m_Lua, name);  // stack +2
+        lua_call(m_Lua, 1 , 1);  // stack +1
+        result = lua_toboolean(m_Lua, 1);  // stack +1
+        lua_pop(m_Lua, 1);  // stack 0
+    }
 
     return result;
 }
