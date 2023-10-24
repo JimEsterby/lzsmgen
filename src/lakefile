@@ -24,6 +24,9 @@ for x = 1, #arg do
     if arg[x] == 'test' then
         lake.set_flags{DEBUG=true}
     end
+    if arg[x] == 'coverage' then
+        lake.set_flags{DEBUG=true}
+    end
 end
 
 
@@ -97,5 +100,8 @@ rm_objects = target('cleanobj', { rm_release, rm_debug })
 target('clean', rm_objects, RM .. ' ' .. CLEAN_TARGETS)
 
 target('test', cxxtest)
+
+-- requires Python
+target('coverage', cxxtest, 'gcovr --html-details ../reports/coverage.html ../debug')
 
 default { lzsmgend }
