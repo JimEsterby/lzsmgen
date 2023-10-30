@@ -30,10 +30,13 @@ extern "C" int mock_luaL_loadfilex(lua_State *L, const char *filename, const cha
 
 Model* theModel;
 
+const char* Model::main_script = "lzsmgen.lua";
+
 Model::Model()
 {
     m_diagram = new Diagram;
     m_diagram_file = new std::string;
+    m_module_base_name = new std::string;
 
     // Attempt to start the interpreter
     failed_interpreter = initialize_interpreter(&m_Lua) ? false : true;
@@ -41,8 +44,17 @@ Model::Model()
 
 Model::Model(const char* file_name)
 {
+    std::size_t extension;
+
     m_diagram = new Diagram;
     m_diagram_file = new std::string(file_name);
+    m_module_base_name = new std::string(file_name);
+
+    extension = m_module_base_name->rfind('.');
+    if (extension != std::string::npos)  // No extension
+    {
+        m_module_base_name->erase(extension);
+    }
 
     // Attempt to start the interpreter
     failed_interpreter = initialize_interpreter(&m_Lua) ? false : true;
@@ -52,6 +64,7 @@ Model::~Model()
 {
     delete m_diagram;
     delete m_diagram_file;
+    delete m_module_base_name;
     lua_close(m_Lua);
 }
 
@@ -80,6 +93,12 @@ const char* Model::file_name() const
 void Model::file_name(const char* name)
 {
     m_diagram_file->assign(name);
+    set_module_base_name();
+}
+
+const char* Model::module_name() const
+{
+    return m_module_base_name->c_str();
 }
 
 bool Model::open_file(const char* name)
@@ -105,7 +124,7 @@ bool Model::open_file(const char* name)
         nr_transitions = lua_tointeger(m_Lua, 1);
         lua_pop(m_Lua, 1);
 
-        std::printf("S=%d\tT=%d\n",nr_states,nr_transitions);
+        //std::printf("S=%d\tT=%d\n",nr_states,nr_transitions);
 
         // Load states
         for (int idx = 1; idx <= nr_states; idx++)
@@ -169,6 +188,7 @@ bool Model::open_file(const char* name)
         }
 
         m_diagram_file->assign(name);
+        set_module_base_name();
         result = true;
     }
 
@@ -244,6 +264,12 @@ bool Model::file_exists(const char* name) const
     return result;
 }
 
+bool Model::generate_code(const char* language, const char* module_name)
+{
+    // TODO
+    return true;
+}
+
 bool Model::initialize_interpreter(lua_State** L)
 {
     bool result = false;
@@ -255,7 +281,7 @@ bool Model::initialize_interpreter(lua_State** L)
         luaL_openlibs(*L);
         lua_gc(*L, LUA_GCRESTART, 0);
 
-        if (LUA_OK == luaL_dofile(*L, "lzsmgen.lua"))
+        if (LUA_OK == luaL_dofile(*L, Model::main_script))
         {
             result = true;
         }
@@ -292,4 +318,19 @@ void Model::reset_script()
 {
     lua_getglobal(m_Lua, "reset");
     lua_call(m_Lua, 0, 0);
+}
+
+void Model::set_module_base_name()
+{
+    if (!m_diagram_file->empty())
+    {
+        std::size_t extension;
+        m_module_base_name->assign(m_diagram_file->c_str());
+
+        extension = m_module_base_name->rfind('.');
+        if (extension != std::string::npos)
+        {
+            m_module_base_name->erase(extension);
+        }
+    }
 }

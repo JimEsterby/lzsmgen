@@ -7,7 +7,23 @@ Diagram::Diagram()
 
 Diagram::~Diagram()
 {
+    int nStates = state_count();
 
+    for (int idx = 0; idx < nStates; idx++)
+    {
+        auto iter = states.begin();
+        CState* cs = *iter;
+        states.pop_front();
+        delete cs;
+    }
+
+    for (int idx = 0; idx < nStates; idx++)
+    {
+        auto iter = transitions.begin();
+        CTransition* ct = *iter;
+        transitions.pop_front();
+        delete ct;
+    }
 }
 
 void Diagram::add_state(CState* state)

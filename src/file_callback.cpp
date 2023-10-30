@@ -36,6 +36,11 @@ const char* FileCallback::name() const
     return theModel->file_name();
 }
 
+const char* FileCallback::module() const
+{
+    return theModel->module_name();
+}
+
 bool FileCallback::save()
 {
     return theModel->save_file();
@@ -45,5 +50,10 @@ bool FileCallback::save(const char* name)
 {
     theModel->file_name(name);
     return save();
+}
+
+bool FileCallback::generate_code(const char* language)
+{
+    return theModel->generate_code(language);
 }
 

@@ -28,7 +28,7 @@ Fl_Menu_Item Viewer::mainMenu[] =
     { "Delete", FL_Delete, (Fl_Callback*)Viewer::cb_Delete, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
     {0,0,0,0,0,0,0,0,0},
     { "Build", 0, 0, 0, (int)FL_SUBMENU, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
-    { "C-code", 0, 0, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
+    { "C-code", 0, (Fl_Callback*)Viewer::cb_GenCode, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
     { "Image", 0, 0, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
     // Remove later, but useful for concept exploration
     { "Test", 0, (Fl_Callback*)Viewer::cb_Test, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
@@ -198,6 +198,20 @@ void Viewer::cb_Delete_i(Fl_Menu_*, void*)
     }
 }
 
+void Viewer::cb_GenCode_i(Fl_Menu_*, void*)
+{
+    if (file_callback->generate_code("c"))
+    {
+        fl_alert("Generated %s.c and %s.h.",
+                 file_callback->module(),
+                 file_callback->module());
+    }
+    else
+    {
+        fl_alert("Code generation failed.");
+    }
+}
+
 // Other control callbacks
 void Viewer::cb_NewState_i(Fl_Button* btn, void* data)
 {
@@ -253,6 +267,11 @@ void Viewer::cb_Exit(Fl_Menu_* menu, void* data)
 void Viewer::cb_Delete(Fl_Menu_* menu, void* data)
 {
     ((Viewer*)(menu->parent()->user_data()))->cb_Delete_i(menu, data);
+}
+
+void Viewer::cb_GenCode(Fl_Menu_* menu, void* data)
+{
+    ((Viewer*)(menu->parent()->user_data()))->cb_GenCode_i(menu, data);
 }
 
 // Other control command callback helpers

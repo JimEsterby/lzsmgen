@@ -92,7 +92,7 @@ lzsmgend = cpp.program{ APP,
 cxxtest = cpp.program{ TEST_APP,
     inputs = { test, objectsd },
     libs = LIBS
-}:run()
+}
 
 rm_release = target('rm_release', nil, RM .. ' ' .. RELDIR)
 rm_debug = target('rm_debug', nil, RM .. ' ' .. DBDIR)
