@@ -8,6 +8,7 @@ TEST_GROUP(Test_Model)
 
 
 // file_exists method
+// Map to KAN-7
 TEST(Test_Model, failed_script001)
 {
     simulate_script_load_failure(true);
@@ -19,6 +20,7 @@ TEST(Test_Model, failed_script001)
 }
 
 // io_failure method
+// Map to KAN-7
 TEST(Test_Model, failed_script002)
 {
     simulate_script_load_failure(true);
@@ -31,6 +33,7 @@ TEST(Test_Model, failed_script002)
 
 // open_file method
 // successful open of demo
+// Map to KAN-10
 TEST(Test_Model, opensuccess001)
 {
     Model* m = new Model;
@@ -41,6 +44,7 @@ TEST(Test_Model, opensuccess001)
 
 // open_file method
 // NULL file name
+// Map to KAN-10
 TEST(Test_Model, openfailure001)
 {
     Model* m = new Model;
@@ -51,6 +55,7 @@ TEST(Test_Model, openfailure001)
 
 // open_file method
 // bogus file name
+// Map to KAN-10
 TEST(Test_Model, openfailure002)
 {
     FAIL("TODO: This is not working, yet.");
@@ -61,6 +66,7 @@ TEST(Test_Model, openfailure002)
 }
 
 // check generation of module base name
+// Map to KAN-19
 TEST(Test_Model, basename001)
 {
     Model* m = new Model;

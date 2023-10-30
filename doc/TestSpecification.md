@@ -448,3 +448,76 @@ A prompt to save the diagram pops up.
 #### Expected results
 1. GUI: Component no longer shows on the application.
 2. Back-end: Component is removed from the appropriate back-end container. Now this container is the Diagram class.
+
+---
+
+| Test Case 29 | Automated |
+| --- | --- |
+| Brief description | Application behavior if scripting not working. |
+| Reason for test | Assure no crash if script is not loadable |
+| Type | **Unit** |
+| Map to user story | [KAN-7 Start GUI](https://jde-psu.atlassian.net/browse/KAN-7) |
+| File | [test_model.cpp](../test/test_model.cpp) |
+| Name | failed_script001 |
+If the base script cannot be loaded, the method "file_exists" (class Model) which relies on the script should return false.
+
+---
+
+| Test Case 30 | Automated |
+| --- | --- |
+| Brief description | Application behavior if scripting not working. |
+| Reason for test | Means for informing user of scripting failure is available. |
+| Type | **Unit** |
+| Map to user story | [KAN-7 Start GUI](https://jde-psu.atlassian.net/browse/KAN-7) |
+| File | [test_model.cpp](../test/test_model.cpp) |
+| Name | failed_script002 |
+If the base script cannot be loaded, a flag in the Model class may be used to inform the user.
+
+---
+
+| Test Case 31 | Automated |
+| --- | --- |
+| Brief description | Successful opening of a diagram file. |
+| Reason for test | Diagram files may be opened. |
+| Type | **Unit** |
+| Map to user story | [KAN-10 Open diagram](https://jde-psu.atlassian.net/browse/KAN-10) |
+| File | [test_model.cpp](../test/test_model.cpp) |
+| Name | opensuccess001 |
+Checks the normal operation of a user opening a file for the Model class.
+
+---
+
+| Test Case 32 | Automated |
+| --- | --- |
+| Brief description | Attempt to open "nothing" |
+| Reason for test | Check for graceful failure if method open_file called without a file name. |
+| Type | **Unit** |
+| Map to user story | [KAN-10 Open diagram](https://jde-psu.atlassian.net/browse/KAN-10) |
+| File | [test_model.cpp](../test/test_model.cpp) |
+| Name | openfailure001 |
+Checks the case of a user opening "NULL" for the Model class. There may be some GUI code to prevent this, but it's better not to rely on it.
+
+---
+
+| Test Case 33 | Automated |
+| --- | --- |
+| Brief description | Attempt to open non-existent file |
+| Reason for test | Check for graceful failure if method open_file called with bogus file name. |
+| Type | **Unit** |
+| Map to user story | [KAN-10 Open diagram](https://jde-psu.atlassian.net/browse/KAN-10) |
+| File | [test_model.cpp](../test/test_model.cpp) |
+| Name | openfailure002 |
+Checks the case of a user opening a non-existent file for the Model class.
+
+---
+
+| Test Case 34 | Automated |
+| --- | --- |
+| Brief description | Check default module for code generation |
+| Reason for test | Check that module base names are determined correctly from the diagram file name |
+| Type | **Unit** |
+| Map to user story | [KAN-19 Open diagram](https://jde-psu.atlassian.net/browse/KAN-19) |
+| File | [test_model.cpp](../test/test_model.cpp) |
+| Name | basename001 |
+Check for normal module base name determination by the Model class using convention diagram file name.
+
