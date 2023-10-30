@@ -459,6 +459,7 @@ A prompt to save the diagram pops up.
 | Map to user story | [KAN-7 Start GUI](https://jde-psu.atlassian.net/browse/KAN-7) |
 | File | [test_model.cpp](../test/test_model.cpp) |
 | Name | failed_script001 |
+
 If the base script cannot be loaded, the method "file_exists" (class Model) which relies on the script should return false.
 
 ---
@@ -471,6 +472,7 @@ If the base script cannot be loaded, the method "file_exists" (class Model) whic
 | Map to user story | [KAN-7 Start GUI](https://jde-psu.atlassian.net/browse/KAN-7) |
 | File | [test_model.cpp](../test/test_model.cpp) |
 | Name | failed_script002 |
+
 If the base script cannot be loaded, a flag in the Model class may be used to inform the user.
 
 ---
@@ -483,6 +485,7 @@ If the base script cannot be loaded, a flag in the Model class may be used to in
 | Map to user story | [KAN-10 Open diagram](https://jde-psu.atlassian.net/browse/KAN-10) |
 | File | [test_model.cpp](../test/test_model.cpp) |
 | Name | opensuccess001 |
+
 Checks the normal operation of a user opening a file for the Model class.
 
 ---
@@ -495,6 +498,7 @@ Checks the normal operation of a user opening a file for the Model class.
 | Map to user story | [KAN-10 Open diagram](https://jde-psu.atlassian.net/browse/KAN-10) |
 | File | [test_model.cpp](../test/test_model.cpp) |
 | Name | openfailure001 |
+
 Checks the case of a user opening "NULL" for the Model class. There may be some GUI code to prevent this, but it's better not to rely on it.
 
 ---
@@ -507,6 +511,7 @@ Checks the case of a user opening "NULL" for the Model class. There may be some 
 | Map to user story | [KAN-10 Open diagram](https://jde-psu.atlassian.net/browse/KAN-10) |
 | File | [test_model.cpp](../test/test_model.cpp) |
 | Name | openfailure002 |
+
 Checks the case of a user opening a non-existent file for the Model class.
 
 ---
@@ -519,5 +524,6 @@ Checks the case of a user opening a non-existent file for the Model class.
 | Map to user story | [KAN-19 Open diagram](https://jde-psu.atlassian.net/browse/KAN-19) |
 | File | [test_model.cpp](../test/test_model.cpp) |
 | Name | basename001 |
+
 Check for normal module base name determination by the Model class using convention diagram file name.
 
