@@ -8,6 +8,7 @@ Diagram::Diagram()
 Diagram::~Diagram()
 {
     int nStates = state_count();
+    int nTransitions = transition_count();
 
     for (int idx = 0; idx < nStates; idx++)
     {
@@ -17,7 +18,7 @@ Diagram::~Diagram()
         delete cs;
     }
 
-    for (int idx = 0; idx < nStates; idx++)
+    for (int idx = 0; idx < nTransitions; idx++)
     {
         auto iter = transitions.begin();
         CTransition* ct = *iter;
