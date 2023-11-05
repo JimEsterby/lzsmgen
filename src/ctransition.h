@@ -17,7 +17,7 @@ public:
     CTransition(const char* condition,
                 const char* name,
                 int x1, int y1, int x2, int y2,
-                int priority = 0);
+                int priority = 1);
     virtual ~CTransition();
     void action(const char* text);
     const char* action() const;
@@ -29,6 +29,33 @@ public:
     void priority(int value) { m_priority = value; }
     std::array<int, 4> position() const { return m_position; }
     void resize(int x1, int y1, int x2, int y2);
+
+    // comparison operators needed for sorting based on priority with lower
+    // values of priority representing higher priorities
+    friend bool operator==(const CTransition& a, const CTransition& b)
+    {
+        return (a.m_priority == b.m_priority);
+    }
+    friend bool operator!=(const CTransition& a, const CTransition& b)
+    {
+        return (a.m_priority != b.m_priority);
+    }
+    friend bool operator<(const CTransition& a, const CTransition& b)
+    {
+        return (a.m_priority < b.m_priority);
+    }
+    friend bool operator>(const CTransition& a, const CTransition& b)
+    {
+        return (a.m_priority > b.m_priority);
+    }
+    friend bool operator<=(const CTransition& a, const CTransition& b)
+    {
+        return !(a < b);
+    }
+    friend bool operator>=(const CTransition& a, const CTransition& b)
+    {
+        return !(a > b);
+    }
 };
 
 #endif

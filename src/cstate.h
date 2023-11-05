@@ -18,6 +18,9 @@ public:
            int x1, int y1, int x2, int y2,
            bool default_state = false);
     virtual ~CState();
+    bool is_substate_of(const CState* cs) const;
+    bool contains(const CState* cs) const;
+    bool contains(int x, int y) const;
     void name(const char* text);
     void during_action(const char* text);
     void entry_action(const char* text);
