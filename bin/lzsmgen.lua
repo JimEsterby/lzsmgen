@@ -1,5 +1,6 @@
 -- lzsmgen.lua
 json = require 'lunajson'
+cgen = require 'codegen'
 
 -- Empty tables
 states = {}

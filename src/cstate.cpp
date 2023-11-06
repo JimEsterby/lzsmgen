@@ -21,14 +21,14 @@ CState::~CState()
     delete m_entry_action;
 }
 
-bool CState::is_substate_of(const CState* cs) const
+bool CState::is_substate_of(const CState& cs) const
 {
     bool result = false;
 
-    if (m_position[0] > cs->position()[0] &&
-        m_position[1] > cs->position()[1] &&
-        m_position[2] < cs->position()[2] &&
-        m_position[3] < cs->position()[3])
+    if (m_position[0] > cs.position()[0] &&
+        m_position[1] > cs.position()[1] &&
+        m_position[2] < cs.position()[2] &&
+        m_position[3] < cs.position()[3])
     {
         result = true;
     }
@@ -36,14 +36,14 @@ bool CState::is_substate_of(const CState* cs) const
     return result;
 }
 
-bool CState::contains(const CState* cs) const
+bool CState::contains(const CState& cs) const
 {
     bool result = false;
 
-    if (m_position[0] < cs->position()[0] &&
-        m_position[1] < cs->position()[1] &&
-        m_position[2] > cs->position()[2] &&
-        m_position[3] > cs->position()[3])
+    if (m_position[0] < cs.position()[0] &&
+        m_position[1] < cs.position()[1] &&
+        m_position[2] > cs.position()[2] &&
+        m_position[3] > cs.position()[3])
     {
         result = true;
     }

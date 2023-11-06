@@ -49,12 +49,18 @@ private:
     lua_State* m_Lua;  // Lua interpreter
     bool failed_interpreter;  // will not be able to read/write files
     static const char* main_script;
+    static const char* during_suffix;
+    static const char* entry_suffix;
+    static const char* t_action_suffix;
     static bool initialize_interpreter(lua_State** L);
 
     void pushstring(const char* text);
     void pushlocation(std::array<int, 4> position);
     void reset_script();  // Reset script globals
     void set_module_base_name();
+    bool write_to_source(const char* text);  // Write any text to source file
+    bool write_state_tr_matrix(CState* cs);
+    bool write_c_source(const char* module_name);
 };
 
 extern Model* theModel;

@@ -23,6 +23,8 @@ public:
     std::list<CTransition*> transition_list() const { return transitions; }
     int state_count() const;
     int transition_count() const;
+    bool transition_origin(const CState& state, const CTransition& transition) const;
+    CState* transition_dest(const CTransition& transition);
 };
 
 #endif
