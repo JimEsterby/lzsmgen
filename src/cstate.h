@@ -32,7 +32,7 @@ public:
     void set_default() { isDefault = true; }
     void set_not_default() { isDefault = false; }
     bool get_default() const { return isDefault; }
-
+    static int compare(const void* a, const void* b);
 };
 
 #endif

@@ -11,6 +11,8 @@ class Diagram
 private:
     std::list<CState*>states;
     std::list<CTransition*>transitions;
+    CState* find_default_substate(CState* state);
+    bool m_error;  // If true, there is an error in the diagram
 
 public:
     Diagram();
@@ -25,6 +27,10 @@ public:
     int transition_count() const;
     bool transition_origin(const CState& state, const CTransition& transition) const;
     CState* transition_dest(const CTransition& transition);
+    CState* state_parent(const CState& state) const;
+    CState* starting_state();
+    bool problem() const { return m_error; }
+    static bool no_text(const char* text);
 };
 
 #endif

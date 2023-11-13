@@ -123,3 +123,28 @@ void CState::resize(int x1, int y1, int x2, int y2)
     m_position[3] = y2;
 }
 
+int CState::compare(const void* a, const void* b)
+{
+    int result;
+    const CState* cs_a;
+    const CState* cs_b;
+
+    cs_a = static_cast<const CState*>(a);
+    cs_b = static_cast<const CState*>(b);
+
+    if (cs_a->is_substate_of(*cs_b))
+    {
+        result = -1;
+    }
+    else if (cs_a->contains(*cs_b))
+    {
+        result = 1;
+    }
+    else
+    {
+        result = 0;
+    }
+
+    return result;
+}
+

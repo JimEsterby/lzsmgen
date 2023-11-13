@@ -5,6 +5,8 @@ extern "C" {
 }
 #include<cstdio>
 #include<cstring>
+#include<cstdlib>
+#include<array>
 
 ///// Test Area
 #ifdef DEBUG
@@ -384,26 +386,14 @@ bool Model::write_to_source(const char* text)
 
 bool Model::write_state_tr_matrix(CState* cs)
 {
+    int nTr;  // number of transitions
     bool result;
-#if 0
-    std::list<CTransition> state_trs;
-#endif
     std::list<CTransition*> ct_list;
+    std::list<CTransition*> cs_tr_list;
+    CTransition** tr;
 
     ct_list = m_diagram->transition_list();
     result = true;
-
-#if 0
-    for (auto iter = ct_list.begin(); iter != ct_list.end(); iter++)
-    {
-        if (m_diagram->transition_origin(*cs, **iter))
-        {
-            state_trs.push_back(**iter);
-        }
-    }
-
-    state_trs.sort();
-#endif
 
     lua_getfield(m_Lua, 1, "begin_tr_matrix");
     lua_pushstring(m_Lua, cs->name());
@@ -413,32 +403,50 @@ bool Model::write_state_tr_matrix(CState* cs)
         lua_pop(m_Lua, 1);
     }
 
-#if 0
-    for (auto iter = state_trs.begin(); iter != state_trs.end(); iter++)
+    // Select all transitions from the diagram which originate in cs
+    for (auto iter = ct_list.begin(); iter != ct_list.end(); iter++)
+    {
+        if (m_diagram->transition_origin(*cs, **iter))
+        {
+            cs_tr_list.push_back(*iter);
+        }
+    }
+
+    // Put transitions in an array for sorting
+    nTr = cs_tr_list.size();
+    if (nTr > 0)
+    {
+        int i = 0;
+        tr = new CTransition*[nTr * sizeof(CTransition*)];
+
+        // Copy list into array
+        for (auto iter = cs_tr_list.begin(); iter != cs_tr_list.end(); iter++)
+        {
+            tr[i] = *iter;
+            i++;
+        }
+        if (nTr > 1)
+        {
+            // Sort array
+            std::qsort(tr, nTr, sizeof(CTransition*), CTransition::compare);
+        }
+    }
+
+    for (int idx = 0; idx < nTr; idx++)
     {
         lua_getfield(m_Lua, 1, "tr_matrix_add");
-        lua_pushstring(m_Lua, (*iter).name());
+        lua_pushstring(m_Lua, tr[idx]->name());
         if (LUA_OK != lua_pcall(m_Lua, 1, 0, 0))
         {
             result = false;
             lua_pop(m_Lua, 1);
         }
     }
-#else
-    for (auto iter = ct_list.begin(); iter != ct_list.end(); iter++)
+
+    if (nTr > 0)
     {
-        if (m_diagram->transition_origin(*cs, **iter))
-        {
-            lua_getfield(m_Lua, 1, "tr_matrix_add");
-            lua_pushstring(m_Lua, (*iter)->name());
-            if (LUA_OK != lua_pcall(m_Lua, 1, 0, 0))
-            {
-                result = false;
-                lua_pop(m_Lua, 1);
-            }
-        }
+        delete[] tr;
     }
-#endif
 
     lua_getfield(m_Lua, 1, "end_tr_matrix");
     if (LUA_OK != lua_pcall(m_Lua, 0, 0, 0))
@@ -617,7 +625,7 @@ bool Model::write_c_source(const char* module_name)
         {
             result = false;
         }
-#if 1
+
         for (auto iter = cs_list.begin(); iter != cs_list.end(); iter++)
         {
             CState* cs = *iter;
@@ -627,9 +635,211 @@ bool Model::write_c_source(const char* module_name)
                 result = false;
             }
         }
-#endif
 
+        if (!write_to_source("/*--- Initialization ---*/\n"))
+        {
+            result = false;
+        }
 
+        lua_getfield(m_Lua, 1, "define_init_begin");
+        lua_pushstring(m_Lua, m_module_base_name->c_str());
+        if (LUA_OK != lua_pcall(m_Lua, 1, 0, 0))
+        {
+            result = false;
+            lua_pop(m_Lua, 1);
+        }
+
+        for (auto iter = ct_list.begin(); iter != ct_list.end(); iter++)
+        {
+            CState* dest;
+            CTransition* ct = *iter;
+
+            lua_getfield(m_Lua, 1, "init_transition");  // stack +2
+            lua_pushstring(m_Lua, ct->name());  // stack +3
+            if (ct->action() == NULL)
+            {
+                lua_pushnil(m_Lua);  // stack +4
+            }
+            else if (std::strcmp(ct->action(), "nil") == 0)
+            {
+                lua_pushnil(m_Lua);  // stack +4
+            }
+            else
+            {
+                lua_pushstring(m_Lua, t_action_suffix);  // stack +4
+            }
+            dest = m_diagram->transition_dest(*ct);
+            if (dest == NULL)
+            {
+                lua_pushnil(m_Lua);  // This is a diagram error, stack +5
+            }
+            else
+            {
+                lua_pushstring(m_Lua, dest->name());  // stack +5
+            }
+            if (LUA_OK != lua_pcall(m_Lua, 3, 0, 0))  // stack +1
+            { 
+                result = false;
+                lua_pop(m_Lua, 1);
+            }
+        }
+
+        if (!write_to_source("    /* initialize states */\n"))
+        {
+            result = false;
+        }
+
+        for (auto iter = cs_list.begin(); iter != cs_list.end(); iter++)
+        {
+            CState* parent;
+            CState* cs = *iter;
+
+            lua_getfield(m_Lua, 1, "init_state");  // stack +2
+            lua_pushstring(m_Lua, cs->name());  // stack +3
+            parent = m_diagram->state_parent(*cs);
+            if (parent == NULL)
+            {
+                lua_pushnil(m_Lua);  // stack +4
+            }
+            else
+            {
+                lua_pushstring(m_Lua, parent->name());  // stack +4
+            }
+            if (cs->during_action() == NULL ||
+                0 == std::strcmp(cs->during_action(), "nil"))
+            {
+                lua_pushnil(m_Lua);  // stack +5
+            }
+            else
+            {
+                lua_pushstring(m_Lua, during_suffix);  // stack +5
+            }
+            if (cs->entry_action() == NULL ||
+                0 == std::strcmp(cs->entry_action(), "nil"))
+            {
+                lua_pushnil(m_Lua);  // stack +6
+            }
+            else
+            {
+                lua_pushstring(m_Lua, entry_suffix);  // stack +6
+            }
+
+            if (LUA_OK != lua_pcall(m_Lua, 4, 0, 0))  // stack +1
+            {
+                result = false;
+                lua_pop(m_Lua, 1);
+            }
+        }
+
+        // Close out the initialization function
+        CState* start = m_diagram->starting_state();
+        lua_getfield(m_Lua, 1, "complete_init_function");
+        if (start == NULL)  // Diagram error
+        {
+            lua_pushnil(m_Lua);
+        }
+        else
+        {
+            lua_pushstring(m_Lua, start->name());
+        }
+        if (LUA_OK != lua_pcall(m_Lua, 1, 0, 0))
+        {
+            result = false;
+            lua_pop(m_Lua, 1);
+        }
+
+        // Write out standard function definitions
+        lua_getfield(m_Lua, 1, "write_selection_transition");
+        if (LUA_OK != lua_pcall(m_Lua, 0, 0, 0))
+        {
+            result = false;
+            lua_pop(m_Lua, 1);
+        }
+        lua_getfield(m_Lua, 1, "write_exec_entry");
+        if (LUA_OK != lua_pcall(m_Lua, 0, 0, 0))
+        {
+            result = false;
+            lua_pop(m_Lua, 1);
+        }
+        lua_getfield(m_Lua, 1, "write_exec_during");
+        if (LUA_OK != lua_pcall(m_Lua, 0, 0, 0))
+        {
+            result = false;
+            lua_pop(m_Lua, 1);
+        }
+        lua_getfield(m_Lua, 1, "write_step");
+        lua_pushstring(m_Lua, m_module_base_name->c_str());
+        if (LUA_OK != lua_pcall(m_Lua, 1, 0, 0))
+        {
+            result = false;
+            lua_pop(m_Lua, 1);
+        }
+
+        // Write out event and transition action function definitions
+        for (auto iter = ct_list.begin(); iter != ct_list.end(); iter++)
+        {
+            CTransition* ct = *iter;
+
+            lua_getfield(m_Lua, 1, "transition_event_def");  // stack +2
+            lua_pushstring(m_Lua, ct->name());  // stack +3
+            if (m_diagram->no_text(ct->condition()))
+            {
+                lua_pushstring(m_Lua, "1");  // always return true
+            }
+            else
+            {
+                lua_pushstring(m_Lua, ct->condition());
+            }
+            if (LUA_OK != lua_pcall(m_Lua, 2, 0, 0))  // stack +1
+            {
+                result = false;
+                lua_pop(m_Lua, 1);
+            }
+
+            if (m_diagram->no_text(ct->action()) == false)
+            {
+                lua_getfield(m_Lua, 1, "action_def");
+                lua_pushstring(m_Lua, ct->name());
+                lua_pushstring(m_Lua, t_action_suffix);
+                lua_pushstring(m_Lua, ct->action());
+                if (LUA_OK != lua_pcall(m_Lua, 3, 0, 0))
+                {
+                    result = false;
+                    lua_pop(m_Lua, 1);
+                }
+            }
+        }
+
+        // Write out state action function definitions 
+        for (auto iter = cs_list.begin(); iter != cs_list.end(); iter++)
+        {
+            CState* cs = *iter;
+
+            if (m_diagram->no_text(cs->entry_action()) == false)
+            {
+                lua_getfield(m_Lua, 1, "action_def");
+                lua_pushstring(m_Lua, cs->name());
+                lua_pushstring(m_Lua, entry_suffix);
+                lua_pushstring(m_Lua, cs->entry_action());
+                if (LUA_OK != lua_pcall(m_Lua, 3, 0, 0))
+                {
+                    result = false;
+                    lua_pop(m_Lua, 1);
+                }
+            }
+            if (m_diagram->no_text(cs->during_action()) == false)
+            {
+                lua_getfield(m_Lua, 1, "action_def");
+                lua_pushstring(m_Lua, cs->name());
+                lua_pushstring(m_Lua, during_suffix);
+                lua_pushstring(m_Lua, cs->during_action());
+                if (LUA_OK != lua_pcall(m_Lua, 3, 0, 0))
+                {
+                    result = false;
+                    lua_pop(m_Lua, 1);
+                }
+            }
+        }
     }
 
     // Close source file
@@ -646,8 +856,6 @@ bool Model::write_c_source(const char* module_name)
             return false;
         }
     }
-
-
 
     return result;
 }

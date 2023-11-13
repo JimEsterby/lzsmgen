@@ -80,3 +80,38 @@ void CTransition::resize(int x1, int y1, int x2, int y2)
     m_position[2] = x2;
     m_position[3] = y2;
 }
+
+/*
+   Intended for use in std::qsort. Ordinarily, I would prefer using a sort
+   method in a STL container, but CppUTest is flagging memory allocation errors
+   for STL stuff.
+
+   Returns -1 if a->priority is less than b->priority
+            0 if a->priority equals b->priority
+            1 if a->priority is greater thn b->priority
+*/
+int CTransition::compare(const void* a, const void* b)
+{
+    int result;
+    const CTransition* ct_a;
+    const CTransition* ct_b;
+
+    // TODO: Would dynamic_cast<> be better here? (Requires RTTI)
+    ct_a = static_cast<const CTransition*>(a);
+    ct_b = static_cast<const CTransition*>(b);
+
+    if (ct_a->priority() < ct_b->priority())
+    {
+        result = -1;
+    }
+    else if (ct_a->priority() > ct_b->priority())
+    {
+        result = 1;
+    }
+    else
+    {
+        result = 0;
+    }
+
+    return result;
+}

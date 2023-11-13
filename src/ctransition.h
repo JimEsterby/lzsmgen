@@ -30,6 +30,8 @@ public:
     std::array<int, 4> position() const { return m_position; }
     void resize(int x1, int y1, int x2, int y2);
 
+    static int compare(const void* a, const void* b);
+
     // comparison operators needed for sorting based on priority with lower
     // values of priority representing higher priorities
     friend bool operator==(const CTransition& a, const CTransition& b)

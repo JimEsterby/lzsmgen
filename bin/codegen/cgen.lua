@@ -140,9 +140,10 @@ function cgen.transition_event_def(base, text)
 	local f = cgen.src_file
 
 	f:write("static uint8_t " .. base .. "_event(void)\n{\n")
-	f:write("return ( " .. text .. " )\n}\n\n")
+	f:write("return ( " .. text .. " );\n}\n\n")
 end
 
+-- Write miscellaneous text to the code
 function cgen.write_text(text)
 	cgen.src_file:write(text)
 end
@@ -155,6 +156,7 @@ function cgen.declare_state(name)
 	cgen.src_file:write("static " .. cgen.state_type .. " " .. name ..";\n")
 end
 
+-- The following three methods used to build the transition matrices
 function cgen.begin_tr_matrix(name)
 	cgen.src_file:write("static " .. cgen.transition_type .. " *" .. name)
 	cgen.src_file:write("_mat[] =\n{\n")
@@ -168,8 +170,74 @@ function cgen.end_tr_matrix()
 	cgen.src_file:write("    NULL\n};\n\n")
 end
 
+-- Start defining the initialization function
+function cgen.define_init_begin(file_basename)
+	local result
+	local base
+	result, base = cgen.base(file_basename)
+
+	if result == true then
+		local f = cgen.src_file
+
+		f:write(cgen.state_type .. " *initialize_" .. base .. "(void)\n{\n")
+		f:write("    /* initialize transitions */\n")
+	end
+end
+
+function cgen.init_transition(name, action, new_state)
+	local l_action
+	local l_state
+
+	if action == nil then
+		l_action = "NULL"
+	else
+		l_action = name .. "_" .. action
+	end
+
+	if new_state == nil then
+		l_state = NULL  -- Note: This is a diagram error
+	else
+		l_state = "&" .. new_state
+	end
+
+	cgen.src_file:write("    " .. name .. ".action = " .. l_action .. ";\n")
+	cgen.src_file:write("    " .. name .. ".event = " .. name .. "_event;\n")
+	cgen.src_file:write("    " .. name .. ".dest = " .. l_state .. ";\n\n")
+end
+
+function cgen.init_state(name, super, during, entry)
+	local l_super
+	local l_during
+	local l_entry
+
+	if super == nil then l_super = "NULL" else l_super = "&" .. super end
+	if during == nil then
+		l_during = "NULL"
+	else
+		l_during = name .. "_" .. during
+	end
+	if entry == nil then
+		l_entry = "NULL"
+	else
+		l_entry = name .. "_" .. entry
+	end
+
+	cgen.src_file:write("    " .. name .. ".super = " .. l_super .. ";\n")
+	cgen.src_file:write("    " .. name .. ".during = " .. l_during .. ";\n")
+	cgen.src_file:write("    " .. name .. ".entry = " .. l_entry .. ";\n")
+	cgen.src_file:write("    " .. name .. ".out_matrix = " .. name .. "_mat;\n\n")
+end
+
+function cgen.complete_init_function(start)
+	if start == nil then
+		cgen.src_file:write("    return NULL;\n}\n\n")
+	else
+		cgen.src_file:write("    return &" .. start .. ";\n}\n\n")
+	end
+end
+
+
 select_transition = [[
-{
     /* super state transitions get higher priority */
     if (state->super)
     {
@@ -185,7 +253,7 @@ select_transition = [[
             /* if the event trigger has occurred...*/
             if (state->out_matrix[i]->event())
             {
-                transition = out_matrix[i];
+                transition = state->out_matrix[i];
                 break;
             }
         }
@@ -193,6 +261,7 @@ select_transition = [[
 
     return transition;
 }
+
 ]]
 
 entry_code = [[
@@ -205,12 +274,83 @@ entry_code = [[
     {
         execute_entry_action(dest->super, origin->super);
     }
-    
+
     if (dest->entry)
     {
         dest->entry();
     }
 }
 ]]
+
+during_code = [[
+{
+    if (state->super)
+    {
+        execute_do_action(state->super);
+    }
+
+    if (state->during)
+    {
+        state->during();
+    }
+}
+
+]]
+
+step_code = [[
+
+    execute_do_action(current);
+
+    transition = select_transition(current);
+
+    if (transition)
+    {
+        if (transition->action)
+        {
+            transition->action();
+        }
+
+        execute_entry_action(transition->dest, current);
+        next = transition->dest;
+    }
+
+    return next;
+}
+]]
+
+function cgen.write_selection_transition()
+	cgen.src_file:write("static " .. cgen.transition_type)
+	cgen.src_file:write(" *select_transition(" .. cgen.state_type .. " *state)\n{\n")
+	cgen.src_file:write("    " .. cgen.transition_type .. " *transition = NULL;\n\n")
+	cgen.src_file:write(select_transition)
+end
+
+function cgen.write_exec_entry()
+	cgen.src_file:write("static void execute_entry_action(")
+	cgen.src_file:write(cgen.state_type .. " *dest, " .. cgen.state_type .. " *origin)\n")
+	cgen.src_file:write(entry_code)
+end
+
+function cgen.write_exec_during()
+	cgen.src_file:write("static void execute_do_action(" .. cgen.state_type)
+	cgen.src_file:write(" *state)\n")
+	cgen.src_file:write(during_code)
+end
+
+function cgen.write_step(file_basename)
+	local result
+	local base
+	result, base = cgen.base(file_basename)
+
+	if result == true then
+		local f = cgen.src_file
+
+		f:write(cgen.state_type .. " *" .. base .. "_step(" .. cgen.state_type)
+		f:write(" *current)\n{\n    ")
+		f:write(cgen.state_type .. " *next = current;\n    ")
+		f:write(cgen.transition_type .. " *transition = NULL;\n")
+		f:write(step_code)
+	end
+end
 
 return cgen
