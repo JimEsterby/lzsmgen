@@ -130,8 +130,6 @@ bool Model::open_file(const char* name)
         nr_transitions = lua_tointeger(m_Lua, 1);
         lua_pop(m_Lua, 1);
 
-        //std::printf("S=%d\tT=%d\n",nr_states,nr_transitions);
-
         // Load states
         for (int idx = 1; idx <= nr_states; idx++)
         {
@@ -193,9 +191,12 @@ bool Model::open_file(const char* name)
             m_diagram->add_transition(ct);
         }
 
-        m_diagram_file->assign(name);
-        set_module_base_name();
-        result = true;
+        if (!(nr_states == 0 && nr_transitions == 0))
+        {
+            m_diagram_file->assign(name);
+            set_module_base_name();
+            result = true;
+        }
     }
 
     reset_script();   

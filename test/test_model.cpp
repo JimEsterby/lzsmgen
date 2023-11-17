@@ -58,7 +58,6 @@ TEST(Test_Model, openfailure001)
 // Map to KAN-10
 TEST(Test_Model, openfailure002)
 {
-    FAIL("TODO: This is not working, yet.");
     Model* m = new Model;
     bool result = m->open_file("thefiledoenstexist.json");
     delete m;

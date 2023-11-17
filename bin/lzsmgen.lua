@@ -109,14 +109,22 @@ end
 Return the number of states in the diagram table. Assumes a valid diagram
 table. ]]
 function nr_states()
-	return #diagram.states
+	local result = 0
+	if diagram.states ~= nil then
+		result = #diagram.states
+	end
+	return result
 end
 
 --[[  nr_transitions()
 Return the number of transitions in the diagram table. Assumes a valid diagram
 table. ]]
 function nr_transitions()
-	return #diagram.transitions
+	local result = 0
+	if diagram.transitions ~= nil then
+		result = #diagram.transitions
+	end
+	return result 
 end
 
 --[[  get_state()
