@@ -66,11 +66,20 @@ end
 --[[  write_diagram()
 Write the diagram information to file indicated by the argument name. The
 information is in JSON format. ]]
-function write_diagram(name)
+function write_diagram(name, deps, internals)
 	local result = false
 	local t = {}
 	t.states = states
 	t.transitions = transitions
+
+	if deps == 0 then
+		deps = "nil"
+	end
+	if internals == 0 then
+		internals = "nil"
+	end
+	t.dependencies = deps
+	t.internals = internals
 
 	--print("Writing " .. name)
 	local f = io.open(name, "w")
@@ -161,5 +170,19 @@ function get_transition(index)
 	priority = diagram.transitions[index].priority
 
 	return name, condition, action, priority, position[1], position[2], position[3], position[4]
+end
+
+function get_dependencies()
+	local deps = diagram.dependencies
+	if diagram.dependencies == nil then
+		deps = "nil"
+	end
+	return deps
+end
+
+function get_internals()
+	local internals = diagram.internals
+	if diagram.internals == nil then internals = "nil" end
+	return internals
 end
 

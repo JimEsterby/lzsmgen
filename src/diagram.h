@@ -13,6 +13,8 @@ private:
     std::list<CTransition*>transitions;
     CState* find_default_substate(CState* state);
     bool m_error;  // If true, there is an error in the diagram
+    std::string* m_dependencies;  // metadata
+    std::string* m_internals;  // metadata
 
 public:
     Diagram();
@@ -30,6 +32,10 @@ public:
     CState* state_parent(const CState& state) const;
     CState* starting_state();
     bool problem() const { return m_error; }
+    const char* dependencies() const;
+    void dependencies(const char* text);
+    const char* internals() const;
+    void internals(const char* text);
     static bool no_text(const char* text);
 };
 

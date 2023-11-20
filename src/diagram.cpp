@@ -4,6 +4,8 @@
 Diagram::Diagram()
 {
     m_error = false;
+    m_dependencies = new std::string();
+    m_internals = new std::string();
 }
 
 Diagram::~Diagram()
@@ -26,6 +28,9 @@ Diagram::~Diagram()
         transitions.pop_front();
         delete ct;
     }
+
+    delete m_dependencies;
+    delete m_internals;
 }
 
 void Diagram::add_state(CState* state)
@@ -288,6 +293,40 @@ CState* Diagram::find_default_substate(CState* cs)
     }
 
     return result;
+}
+
+const char* Diagram::dependencies() const
+{
+    const char* result = NULL;
+
+    if (!m_dependencies->empty())
+    {
+        result = m_dependencies->c_str();
+    }
+
+    return result;
+}
+
+void Diagram::dependencies(const char* text)
+{
+    m_dependencies->assign(text);
+}
+
+const char* Diagram::internals() const
+{
+    const char* result = NULL;
+
+    if (!m_internals->empty())
+    {
+        result = m_internals->c_str();
+    }
+
+    return result;
+}
+
+void Diagram::internals(const char* text)
+{
+    m_internals->assign(text);
 }
 
 bool Diagram::no_text(const char* text)

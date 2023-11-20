@@ -18,9 +18,9 @@ Diagram* DataCallback::get_diagram() const
     return theModel->diagram();
 }
 
-Diagram* DataCallback::create_diagram()
+Diagram* DataCallback::new_diagram()
 {
-    return 0;  // TODO
+    return theModel->new_diagram();
 }
 
 CTransition* DataCallback::create_transition(const char* event,

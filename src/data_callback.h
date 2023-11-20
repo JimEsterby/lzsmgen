@@ -12,7 +12,7 @@ public:
     ~DataCallback();
 
     Diagram* get_diagram() const;
-    Diagram* create_diagram();
+    Diagram* new_diagram();
 
     CTransition* create_transition(const char* event,
                                    std::array<int, 4> position,

@@ -15,6 +15,7 @@ public:
     ~Model();
 
     Diagram* diagram() const;
+    Diagram* new_diagram();  // New empty diagram
 
     // Returns true if a model file is loaded
     bool file_loaded() const;

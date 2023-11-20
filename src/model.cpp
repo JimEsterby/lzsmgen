@@ -79,6 +79,13 @@ Diagram* Model::diagram() const
     return m_diagram;
 }
 
+Diagram* Model::new_diagram()
+{
+    delete m_diagram;
+    m_diagram = new Diagram;
+    return m_diagram;
+}
+
 bool Model::file_loaded() const
 {
     return !(m_diagram_file->empty());
@@ -193,6 +200,17 @@ bool Model::open_file(const char* name)
 
         if (!(nr_states == 0 && nr_transitions == 0))
         {
+            // Get the diagram metadata if any
+            lua_getglobal(m_Lua, "get_dependencies");
+            lua_call(m_Lua, 0, 1);
+            m_diagram->dependencies(lua_tostring(m_Lua, 1));
+            lua_pop(m_Lua, 1);
+
+            lua_getglobal(m_Lua, "get_internals");
+            lua_call(m_Lua, 0, 1);
+            m_diagram->internals(lua_tostring(m_Lua, 1));
+            lua_pop(m_Lua, 1);
+
             m_diagram_file->assign(name);
             set_module_base_name();
             result = true;
@@ -237,7 +255,9 @@ bool Model::save_file()
 
     lua_getglobal(m_Lua, "write_diagram");
     lua_pushstring(m_Lua, m_diagram_file->c_str());
-    if (LUA_OK == lua_pcall(m_Lua, 1, 1, 0))
+    lua_pushstring(m_Lua, m_diagram->dependencies());
+    lua_pushstring(m_Lua, m_diagram->internals());
+    if (LUA_OK == lua_pcall(m_Lua, 3, 1, 0))
     {
         result = lua_toboolean(m_Lua, 1);
     }

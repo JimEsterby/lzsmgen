@@ -6,6 +6,7 @@
 #include "viewer.h"
 #include "state_pict.h"
 #include "transition_pict.h"
+#include "metadata_dlg.h"
 #include "file_callback.h"
 #include "data_callback.h"
 
@@ -20,11 +21,14 @@ Fl_Menu_Item Viewer::mainMenu[] =
     { "E&xit", 0, (Fl_Callback*)Viewer::cb_Exit, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
     {0,0,0,0,0,0,0,0,0},
     { "&Edit", 0, 0, 0, (int)FL_SUBMENU, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
+#if 0  // TODO: Add later
     { "Undo", FL_CTRL+'z', 0, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
     { "Redo", FL_CTRL+'y', 0, 0, (int)FL_MENU_DIVIDER, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
     { "Cut", FL_CTRL+'x', 0, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
     { "Copy", FL_CTRL+'c', 0, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
     { "Paste", FL_CTRL+'v', 0, 0, (int)FL_MENU_DIVIDER, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
+#endif
+    { "Metadata...", 0, (Fl_Callback*)Viewer::cb_MetaData, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
     { "Delete", FL_Delete, (Fl_Callback*)Viewer::cb_Delete, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
     {0,0,0,0,0,0,0,0,0},
     { "Build", 0, 0, 0, (int)FL_SUBMENU, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
@@ -59,6 +63,8 @@ void Viewer::cb_New_i(Fl_Menu_* menu, void* data)
     editor->clear();
     editor->reset_changed();
     editor->redraw();
+
+    (void)data_callback->new_diagram();  // Must be last!
 }
 
 void Viewer::cb_Open_i(Fl_Menu_* menu, void* data)
@@ -183,6 +189,18 @@ void Viewer::cb_Exit_i(Fl_Menu_*, void*)
     this->topLevel->hide();
 }
 
+void Viewer::cb_MetaData_i(Fl_Menu_*, void*)
+{ 
+    MetaDataDialog* d = new MetaDataDialog(data_callback->get_diagram());
+    d->show();
+    if (d->OK_pressed())
+    {
+        editor->set_changed();
+    }
+
+    delete d;
+}
+
 void Viewer::cb_Delete_i(Fl_Menu_*, void*)
 {
     ComponentPict* cp = editor->selected_component();
@@ -262,6 +280,11 @@ void Viewer::cb_Test(Fl_Menu_* menu, void* data)
 void Viewer::cb_Exit(Fl_Menu_* menu, void* data)
 {
     ((Viewer*)(menu->parent()->user_data()))->cb_Exit_i(menu, data);
+}
+
+void Viewer::cb_MetaData(Fl_Menu_* menu, void* data)
+{
+    ((Viewer*)(menu->parent()->user_data()))->cb_MetaData_i(menu, data);
 }
 
 void Viewer::cb_Delete(Fl_Menu_* menu, void* data)

@@ -43,6 +43,7 @@ private:
     inline void cb_SaveAs_i(Fl_Menu_*, void*);
     inline void cb_Test_i(Fl_Menu_*, void*);
     inline void cb_Exit_i(Fl_Menu_*, void*);
+    inline void cb_MetaData_i(Fl_Menu_*, void*);
     inline void cb_Delete_i(Fl_Menu_*, void*);
     inline void cb_GenCode_i(Fl_Menu_*, void*);
     inline void cb_NewState_i(Fl_Button*, void*);
@@ -54,6 +55,7 @@ private:
     static void cb_SaveAs(Fl_Menu_*, void*);
     static void cb_Test(Fl_Menu_*, void*);
     static void cb_Exit(Fl_Menu_*, void*);
+    static void cb_MetaData(Fl_Menu_*, void*);
     static void cb_Delete(Fl_Menu_*, void*);
     static void cb_GenCode(Fl_Menu_*, void*);
     static void cb_NewState(Fl_Button*, void*);
