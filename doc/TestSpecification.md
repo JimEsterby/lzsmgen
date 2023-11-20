@@ -527,3 +527,100 @@ Checks the case of a user opening a non-existent file for the Model class.
 
 Check for normal module base name determination by the Model class using convention diagram file name.
 
+---
+
+| Test Case 35 | |
+| --- | --- |
+| Brief description | Editing the dependencies of previously created diagram |
+| Reason for test | Check for information retention |
+| Type | **System** |
+| Map to user story | [KAN-22 Externals in generated code](https://jde-psu.atlassian.net/browse/KAN-22) |
+#### Steps
+1. Load the file, "thermostat.json", located in the demos directory.
+2. Select "Metadata" in the application menu.
+
+#### Expected results
+The text, "#include "sensors.h", is displayed in the Dependencies edit area of the popup dialog that appears.
+
+---
+
+| Test Case 36 | Automated |
+| --- | --- |
+| Brief description | Dependency code generation |
+| Reason for test | Check that dependencies are properly written to C source code |
+| Type | **Unit** |
+| Map to user story | [KAN-22 Externals in generated code](https://jde-psu.atlassian.net/browse/KAN-22) |
+| File | [test_filecallback.cpp](../test/test_filecallback.cpp) |
+| Name | Dep_001 |
+
+This is a text comparision of expected vs. actual text written.
+
+---
+
+| Test Case 37 | |
+| --- | --- |
+| Brief description | Editing the internal variables of previously created diagram |
+| Reason for test | Check for information retention |
+| Type | **System** |
+| Map to user story | [KAN-86 Enable adding state variables](https://jde-psu.atlassian.net/browse/KAN-86) |
+#### Steps
+1. Load the file, "thermostat.json", located in the demos directory.
+2. Select "Metadata" in the application menu.
+
+#### Expected results
+The text, "static uint16_t timer;", is displayed in the Internals edit area of the popup dialog that appears.
+
+---
+
+| Test Case 38 | Automated |
+| --- | --- |
+| Brief description | Internal variable code generation |
+| Reason for test | Check that internal variables are properly written to C source code |
+| Type | **Unit** |
+| Map to user story | [KAN-86 Enable adding state variables](https://jde-psu.atlassian.net/browse/KAN-86) |
+| File | [test_filecallback.cpp](../test/test_filecallback.cpp) |
+| Name | Internal_001 |
+
+This is a text comparision of expected vs. actual text written.
+
+---
+
+| Test Case 39 | |
+| --- | --- |
+| Brief description | Editing and saving the internal variables |
+| Reason for test | Check that variables are saved to file |
+| Type | **System** |
+| Map to user story | [KAN-86 Enable adding state variables](https://jde-psu.atlassian.net/browse/KAN-86) |
+#### Steps
+1. Select "New" in the application menu to create a new diagram.
+2. Add two states and one transition.
+3. Select "Metadata".
+4. In the dialog that appears, type "This is my variable" in the Dependencies edit area.
+5. Select Ok on the dialog.
+6. Save the diagram as a JSON file.
+7. Open the saved JSON file and check for the typed text in the "internals" field.
+
+#### Expected results
+The text, "internals": "This is my variable", should be contained in the JSON file.
+
+---
+
+| Test Case 40 | |
+| --- | --- |
+| Brief description | Editing and saving the dependencies |
+| Reason for test | Check that dependencies are saved to file |
+| Type | **System** |
+| Map to user story | [KAN-22 Externals in generated code](https://jde-psu.atlassian.net/browse/KAN-22) |
+#### Steps
+1. Select "New" in the application menu to create a new diagram.
+2. Add two states and one transition.
+3. Select "Metadata".
+4. In the dialog that appears, type "#include "interface.h"" in the Dependencies edit area.
+5. Select Ok on the dialog.
+5. Save the diagram as a JSON file.
+6. Open the saved JSON file and check for the typed text in the "dependencies" field.
+
+#### Expected results
+The text, "dependencies": "#include \"interface.h\"", should be contained in the JSON file.
+
+---

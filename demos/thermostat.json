@@ -1,54 +1,56 @@
 {
-  "transitions": [
-    {
-      "action": "nil",
-      "priority": 1,
-      "position": [
-        209,
-        74,
-        365,
-        268
-      ],
-      "condition": "temperature > 70",
-      "name": "high_temperature"
-    },
-    {
-      "action": "nil",
-      "priority": 0,
-      "position": [
-        353,
-        364,
-        96,
-        180
-      ],
-      "condition": "temperature < 65",
-      "name": "low_temperature"
-    }
-  ],
+  "dependencies": "#include \"sensors.h\"",
+  "internals": "static uint16_t timer;",
   "states": [
     {
       "entry": "turn_heater_on();",
       "default": false,
-      "during": "nil",
       "position": [
         60,
         44,
         229,
         212
       ],
-      "name": "heater_on"
+      "name": "heater_on",
+      "during": "nil"
     },
     {
       "entry": "turn_heater_off();",
       "default": true,
-      "during": "nil",
       "position": [
         338,
         220,
         522,
         386
       ],
-      "name": "heater_off"
+      "name": "heater_off",
+      "during": "nil"
+    }
+  ],
+  "transitions": [
+    {
+      "position": [
+        209,
+        74,
+        365,
+        268
+      ],
+      "priority": 1,
+      "condition": "temperature > 70",
+      "action": "nil",
+      "name": "high_temperature"
+    },
+    {
+      "position": [
+        353,
+        364,
+        96,
+        180
+      ],
+      "priority": 0,
+      "condition": "temperature < 65",
+      "action": "nil",
+      "name": "low_temperature"
     }
   ]
 }
