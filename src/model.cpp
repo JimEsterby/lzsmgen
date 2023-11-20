@@ -534,8 +534,39 @@ bool Model::write_c_source(const char* module_name)
         }
         // stack +1
 
+        // Custom dependencies
+        if (!write_to_source("/*--- Additional dependencies ---*/\n"))
+        {
+            result = false;
+        }
+        if (m_diagram->dependencies() != NULL)
+        {
+            if (!(0 == std::strcmp(m_diagram->dependencies(), "nil")))
+            {
+                if (!write_to_source(m_diagram->dependencies()))
+                {
+                    result = false;
+                }
+            }        
+        }
+        // User added state machine variables
+        if (!write_to_source("\n\n/*--- Internal Symbols ---*/\n"))
+        {
+            result = false;
+        }
+        if (m_diagram->internals() != NULL)
+        {
+            if (!(0 == std::strcmp(m_diagram->internals(), "nil")))
+            {
+                if (!write_to_source(m_diagram->internals()))
+                {
+                    result = false;
+                }
+            }        
+        }
+
         // Prototypes (states)
-        if(!write_to_source("\n/*--- State Action Prototypes ---*/\n"))
+        if(!write_to_source("\n\n/*--- State Action Prototypes ---*/\n"))
         {
             result = false;
         }
@@ -861,11 +892,8 @@ bool Model::write_c_source(const char* module_name)
                 }
             }
         }
-    }
-
-    // Close source file
-    if (fileIsOpen)
-    {
+    
+        // Close source file
         lua_getfield(m_Lua, 1, "close_src");  // stack +2
         if (LUA_OK == lua_pcall(m_Lua, 0, 0, 0))  // stack +1
         {

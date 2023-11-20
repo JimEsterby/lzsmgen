@@ -14,6 +14,11 @@ public:
     void show();
     bool OK_pressed() const { return m_OK_pressed; }
 
+#ifdef DEBUG
+    const char* check_dep() const { return dependency_buf->text(); }
+    const char* check_internal() const { return internal_buf->text(); }
+#endif
+
 private:
     Fl_Double_Window* mainWin;
     Fl_Text_Editor* dependency;  // Dependencies
