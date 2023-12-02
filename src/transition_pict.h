@@ -34,6 +34,7 @@ private:
     static const int margin = 5;
     static const int arrow_head = 10;
     static const int grab_area = 10;
+    static const int fontsize = 10;
 
     int drag_area(int x, int y);
     void draw_arrow();

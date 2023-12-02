@@ -142,7 +142,7 @@ CState* Diagram::transition_dest(const CTransition& transition)
             idx++;
         }
         // Sort array
-        std::qsort(cs_array, cs.size(), sizeof(cs_array[0]), CState::compare);
+        CState::bubble_sort(cs_array, cs.size());
         result = cs_array[0];
         delete[] cs_array;
     }
@@ -192,7 +192,7 @@ CState* Diagram::state_parent(const CState& state) const
             cs_array[idx] = *iter;
             idx++;
         }
-        std::qsort(cs_array, parents.size(), sizeof(cs_array[0]), CState::compare);
+        CState::bubble_sort(cs_array, parents.size());
         result = cs_array[0];
         delete[] cs_array;
     }
@@ -252,12 +252,12 @@ CState* Diagram::find_default_substate(CState* cs)
             cs_array[idx] = *iter;
             idx++;
         }
-        std::qsort(cs_array, nSubstates, sizeof(cs_array[0]), CState::compare);
+        CState::bubble_sort(cs_array, nSubstates);
 
         // cs_array[nSubstates - 1] should be guaranteed to be only contained
         // by 'cs' and not a substate of 'cs'
         found = false;
-        for (idx = nSubstates - 1; idx > 0; idx--)
+        for (idx = nSubstates - 1; idx >= 0; idx--)
         {
             if (CState::compare(cs_array[idx], cs_array[nSubstates - 1]) == 0)
             {

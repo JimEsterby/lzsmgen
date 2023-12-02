@@ -449,7 +449,7 @@ bool Model::write_state_tr_matrix(CState* cs)
         if (nTr > 1)
         {
             // Sort array
-            std::qsort(tr, nTr, sizeof(CTransition*), CTransition::compare);
+            CTransition::bubble_sort(tr, nTr);
         }
     }
 

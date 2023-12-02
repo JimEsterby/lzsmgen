@@ -23,6 +23,8 @@ protected:
 
 private:
     CState* data;
+    static const int fontsize = 10;
+    static const int bg_color = 215;
 };
 
 #endif

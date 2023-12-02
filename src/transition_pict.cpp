@@ -11,7 +11,7 @@ TransitionPict::TransitionPict(int x, int y, int w, int h, const char* condition
 : ComponentPict(x, y, w, h, condition)
 {
     std::array<int, 4> position;
-    labelsize(12);
+    labelsize(fontsize);
     align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
     x_org = x + margin;
     y_org = y + margin;
@@ -34,7 +34,7 @@ TransitionPict::TransitionPict(CTransition* ct)
                 ct->condition())
 {
     data = ct;
-    labelsize(12);
+    labelsize(fontsize);
     align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
     x_org = ct->position()[0];
     y_org = ct->position()[1];

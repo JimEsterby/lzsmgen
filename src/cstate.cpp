@@ -1,4 +1,5 @@
 #include "cstate.h"
+#include<cstdio>
 
 CState::CState(const char* name,
                int x1, int y1, int x2, int y2,
@@ -123,20 +124,36 @@ void CState::resize(int x1, int y1, int x2, int y2)
     m_position[3] = y2;
 }
 
-int CState::compare(const void* a, const void* b)
+
+void CState::bubble_sort(CState* array[], int nElements)
+{
+    int idx1;
+    int idx2;
+
+    for (idx1 = 0; idx1 < nElements; idx1++)
+    {
+        for (idx2 = 0; idx2 < nElements - idx1 - 1; idx2++)
+        {
+            if (1 == CState::compare(array[idx2], array[idx2 + 1]))
+            {
+                // Swap elements
+                CState* temp = array[idx2];
+                array[idx2] = array[idx2 + 1];
+                array[idx2 + 1] = temp;
+            }
+        }
+    }
+}
+
+int CState::compare(const CState* a, const CState* b)
 {
     int result;
-    const CState* cs_a;
-    const CState* cs_b;
 
-    cs_a = static_cast<const CState*>(a);
-    cs_b = static_cast<const CState*>(b);
-
-    if (cs_a->is_substate_of(*cs_b))
+    if (a->is_substate_of(*b))
     {
         result = -1;
     }
-    else if (cs_a->contains(*cs_b))
+    else if (a->contains(*b))
     {
         result = 1;
     }

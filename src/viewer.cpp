@@ -28,6 +28,7 @@ Fl_Menu_Item Viewer::mainMenu[] =
     { "Copy", FL_CTRL+'c', 0, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
     { "Paste", FL_CTRL+'v', 0, 0, (int)FL_MENU_DIVIDER, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
 #endif
+    { "Refresh", 0, (Fl_Callback*)Viewer::cb_Refresh, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
     { "Metadata...", 0, (Fl_Callback*)Viewer::cb_MetaData, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
     { "Delete", FL_Delete, (Fl_Callback*)Viewer::cb_Delete, 0, 0, (uchar)FL_NORMAL_LABEL, 0, 12, 0 },
     {0,0,0,0,0,0,0,0,0},
@@ -127,6 +128,7 @@ void Viewer::cb_Save_i(Fl_Menu_* menu, void* data)
         {
             // No unsaved changes
             editor->reset_changed();
+            fl_alert("Saved %s.", file_callback->name());
         }
         else
         {
@@ -182,6 +184,7 @@ void Viewer::cb_Test_i(Fl_Menu_*, void*)
     editor->redraw();*/
 
     fl_alert("We have %d pictures and\n%d objects.", editor->children() - 2, states + transitions);
+    editor->redraw();
 }
 
 void Viewer::cb_Exit_i(Fl_Menu_*, void*)
@@ -199,6 +202,11 @@ void Viewer::cb_MetaData_i(Fl_Menu_*, void*)
     }
 
     delete d;
+}
+
+void Viewer::cb_Refresh_i(Fl_Menu_*, void*)
+{
+    editor->redraw();
 }
 
 void Viewer::cb_Delete_i(Fl_Menu_*, void*)
@@ -285,6 +293,11 @@ void Viewer::cb_Exit(Fl_Menu_* menu, void* data)
 void Viewer::cb_MetaData(Fl_Menu_* menu, void* data)
 {
     ((Viewer*)(menu->parent()->user_data()))->cb_MetaData_i(menu, data);
+}
+
+void Viewer::cb_Refresh(Fl_Menu_* menu, void* data)
+{
+    ((Viewer*)(menu->parent()->user_data()))->cb_Refresh_i(menu, data);
 }
 
 void Viewer::cb_Delete(Fl_Menu_* menu, void* data)
@@ -416,7 +429,27 @@ int Viewer::run()
 // Load diagram into the canvas area 
 void Viewer::load_diagram()
 {
+#if 0
+    std::list<CState*> state;
+    std::list<CTransition*> transition;
+    Diagram* d = data_callback->get_diagram();
+    state = d->state_list();
+    transition = d->transition_list();
 
+    for (auto iter = state.begin(); iter != state.end(); iter++)
+    {
+        StatePict* sp = new StatePict(*iter);
+        editor->add((Fl_Widget*) sp);
+    }
+
+    for (auto iter = transition.begin(); iter != transition.end(); iter++)
+    {
+        TransitionPict* tp = new TransitionPict(*iter);
+        editor->add((Fl_Widget*) tp);
+    }
+
+    editor->redraw()
+#endif
 }
 
 // GUI initialization function to be called by the controller

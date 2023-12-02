@@ -81,6 +81,26 @@ void CTransition::resize(int x1, int y1, int x2, int y2)
     m_position[3] = y2;
 }
 
+void CTransition::bubble_sort(CTransition* array[], int nElements)
+{
+    int idx1;
+    int idx2;
+
+    for (idx1 = 0; idx1 < nElements; idx1++)
+    {
+        for (idx2 = 0; idx2 < nElements - idx1 - 1; idx2++)
+        {
+            if (1 == CTransition::compare(array[idx2], array[idx2 + 1]))
+            {
+                // Swap elements
+                CTransition* temp = array[idx2];
+                array[idx2] = array[idx2 + 1];
+                array[idx2 + 1] = temp;
+            }
+        }
+    }
+}
+
 /*
    Intended for use in std::qsort. Ordinarily, I would prefer using a sort
    method in a STL container, but CppUTest is flagging memory allocation errors
@@ -90,21 +110,15 @@ void CTransition::resize(int x1, int y1, int x2, int y2)
             0 if a->priority equals b->priority
             1 if a->priority is greater thn b->priority
 */
-int CTransition::compare(const void* a, const void* b)
+int CTransition::compare(const CTransition* a, const CTransition* b)
 {
     int result;
-    const CTransition* ct_a;
-    const CTransition* ct_b;
 
-    // TODO: Would dynamic_cast<> be better here? (Requires RTTI)
-    ct_a = static_cast<const CTransition*>(a);
-    ct_b = static_cast<const CTransition*>(b);
-
-    if (ct_a->priority() < ct_b->priority())
+    if (a->priority() < b->priority())
     {
         result = -1;
     }
-    else if (ct_a->priority() > ct_b->priority())
+    else if (a->priority() > b->priority())
     {
         result = 1;
     }

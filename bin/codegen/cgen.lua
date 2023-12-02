@@ -73,7 +73,8 @@ function cgen.write_header(file_basename)
 		-- Function prototypes
 		f:write(basename .. "_state_t *" .. basename .. "_step(")
 		f:write(basename .. "_state_t *current_state);\n")
-		f:write(basename .. "_state_t *initialize_" .. basename .. "(void)\n")
+		f:write(basename .. "_state_t *initialize_" .. basename .. "(void);\n\n")
+		f:write("#endif\n")
 
 		f:close()
 		result = true

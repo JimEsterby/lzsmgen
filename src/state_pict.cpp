@@ -12,8 +12,8 @@ StatePict::StatePict(int x, int y, int w, int h, const char* name)
 	std::array<int, 4> position;
     box(FL_ROUNDED_BOX);
     align(Fl_Align(FL_ALIGN_TOP|FL_ALIGN_INSIDE));
-    color((Fl_Color)215);  // light yellow
-    labelsize(12);
+    color((Fl_Color)bg_color);  // light yellow
+    labelsize(fontsize);
 
 	position[0] = x;
 	position[1] = y;
@@ -29,8 +29,8 @@ StatePict::StatePict(int x, int y, const char* name)
 	std::array<int, 4> position;
     box(FL_ROUNDED_BOX);
     align(Fl_Align(FL_ALIGN_TOP|FL_ALIGN_INSIDE));
-    color((Fl_Color)215);  // light yellow
-    labelsize(12);
+    color((Fl_Color)bg_color);  // light yellow
+    labelsize(fontsize);
 
 	position[0] = x;
 	position[1] = y;
@@ -50,8 +50,8 @@ StatePict::StatePict(CState* cs)
 	data = cs;
     box(FL_ROUNDED_BOX);
     align(Fl_Align(FL_ALIGN_TOP|FL_ALIGN_INSIDE));
-    color((Fl_Color)215);  // light yellow
-    labelsize(12);
+    color((Fl_Color)bg_color);  // light yellow
+    labelsize(fontsize);
 }
 
 StatePict::~StatePict()
