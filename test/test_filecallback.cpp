@@ -13,7 +13,7 @@ TEST_GROUP(FileCallback)
 {
     void setup()
     {
-        theModel = new Model;
+        theModel = new Model("lzsmgen.exe");
         fc = new FileCallback;
     }
     void teardown()

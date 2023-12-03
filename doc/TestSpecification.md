@@ -695,3 +695,43 @@ Application exits. The original file from step 2 is identical to the new file cr
 
 ---
 
+| Test Case 45 | Automated |
+| --- | --- |
+| Brief description | Destination state for a given transition |
+| Reason for test | Check that code generation selects the correct destination state for a transition. |
+| Type | **Unit** |
+| Map to user story | [KAN-19 Code generation](https://jde-psu.atlassian.net/browse/KAN-19) |
+| File | [test_diagram.cpp](../test/test_diagram.cpp) |
+| Name | transition_dest001 |
+
+Typical example from adaptive cruise control demo.
+
+---
+
+| Test Case 46 | Automated |
+| --- | --- |
+| Brief description | Destination state for a given transition |
+| Reason for test | Check that code generation selects the correct destination state for a transition. |
+| Type | **Unit** |
+| Map to user story | [KAN-19 Code generation](https://jde-psu.atlassian.net/browse/KAN-19) |
+| File | [test_diagram.cpp](../test/test_diagram.cpp) |
+| Name | transition_dest002 |
+
+Nested default states.
+
+---
+
+| Test Case 47 | Automated |
+| --- | --- |
+| Brief description | Destination state for a given transition |
+| Reason for test | Check that code generation selects the correct destination state for a transition. |
+| Type | **Unit** |
+| Map to user story | [KAN-19 Code generation](https://jde-psu.atlassian.net/browse/KAN-19) |
+| File | [test_diagram.cpp](../test/test_diagram.cpp) |
+| Name | transition_dest003 |
+
+Nested states.
+
+---
+
+
