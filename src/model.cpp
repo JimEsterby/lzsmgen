@@ -82,7 +82,9 @@ Diagram* Model::diagram() const
 Diagram* Model::new_diagram()
 {
     delete m_diagram;
+    delete m_diagram_file;
     m_diagram = new Diagram;
+    m_diagram_file = new std::string;
     return m_diagram;
 }
 
