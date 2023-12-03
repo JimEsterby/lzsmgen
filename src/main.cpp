@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
 {
     int result;
     // Create the model
-    theModel = new Model;
+    theModel = new Model(argv[0]);
     // Create control interfaces for viewer use
     file_callback = new FileCallback;
     data_callback = new DataCallback;

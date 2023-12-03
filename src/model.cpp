@@ -38,17 +38,17 @@ const char* Model::during_suffix = "do";
 const char* Model::entry_suffix = "entry";
 const char* Model::t_action_suffix = "action";
 
-Model::Model()
+Model::Model(const char* app_name)
 {
     m_diagram = new Diagram;
     m_diagram_file = new std::string;
     m_module_base_name = new std::string;
 
     // Attempt to start the interpreter
-    failed_interpreter = initialize_interpreter(&m_Lua) ? false : true;
+    failed_interpreter = initialize_interpreter(&m_Lua, app_name) ? false : true;
 }
 
-Model::Model(const char* file_name)
+Model::Model(const char* app_name, const char* file_name)
 {
     std::size_t extension;
 
@@ -63,7 +63,7 @@ Model::Model(const char* file_name)
     }
 
     // Attempt to start the interpreter
-    failed_interpreter = initialize_interpreter(&m_Lua) ? false : true;
+    failed_interpreter = initialize_interpreter(&m_Lua, app_name) ? false : true;
 }
 
 Model::~Model()
@@ -323,21 +323,37 @@ bool Model::generate_code(const char* language, const char* module_name)
     return result;
 }
 
-bool Model::initialize_interpreter(lua_State** L)
+bool Model::initialize_interpreter(lua_State** L, const char* app_name)
 {
     bool result = false;
     *L = luaL_newstate();
 
     if (*L)
     {
+        // Determine the script name from the application name
+        std::string* app = new std::string(app_name);
+        size_t ext = app->rfind(".exe");
+        if (ext == app->npos)
+        {
+            app->append(".lua");
+        }
+        else  // extension was found (MS Windows?)
+        {
+            app->erase(ext);
+            app->append(".lua");
+        }
+
+        // Get Lua libraries
         lua_gc(*L, LUA_GCSTOP, 0);
         luaL_openlibs(*L);
         lua_gc(*L, LUA_GCRESTART, 0);
 
-        if (LUA_OK == luaL_dofile(*L, Model::main_script))
+        if (LUA_OK == luaL_dofile(*L, app->c_str()))
         {
             result = true;
         }
+
+        delete app;
     }
 
     return result;

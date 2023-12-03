@@ -10,8 +10,8 @@ extern "C" {
 class Model
 {
 public:
-    Model();
-    Model(const char* file_name);
+    Model(const char* app_name);
+    Model(const char* app_name, const char* file_name);
     ~Model();
 
     Diagram* diagram() const;
@@ -53,7 +53,7 @@ private:
     static const char* during_suffix;
     static const char* entry_suffix;
     static const char* t_action_suffix;
-    static bool initialize_interpreter(lua_State** L);
+    static bool initialize_interpreter(lua_State** L, const char* app_name);
 
     void pushstring(const char* text);
     void pushlocation(std::array<int, 4> position);
