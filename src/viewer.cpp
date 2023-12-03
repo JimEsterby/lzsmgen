@@ -187,8 +187,25 @@ void Viewer::cb_Test_i(Fl_Menu_*, void*)
     editor->redraw();
 }
 
-void Viewer::cb_Exit_i(Fl_Menu_*, void*)
+void Viewer::cb_Exit_i(Fl_Menu_* menu, void* data)
 {
+    if (editor->changed())
+    {
+        int user_choice = fl_choice("Lose unsaved changes?",
+                                    "Cancel",
+                                    "Lose Changes",  // default
+                                    "Save File");
+        if (user_choice == 2)  // Save File
+        {
+            cb_Save_i(menu, data);
+            return;
+        }
+        else if (user_choice == 0)  // Cancel
+        {
+            return;
+        }        
+    }
+
     this->topLevel->hide();
 }
 
