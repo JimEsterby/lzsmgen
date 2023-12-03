@@ -1,0 +1,16 @@
+-- Build script for state machine generator
+
+-- Distinguish between Windows and Linux by checking path separator
+LIBS = 'fltk'
+if package.config:sub(1,1) ~= '/' then
+	LIBS = {'fltk', 'ole32', 'gdi32', 'uuid', 'comctl32' }
+end
+
+sm = c.group{'sm', src = { 'cruise_io', 'cruise' } }
+
+gui = cpp.group{ 'gui', src = { 'main', 'cruise_demo' } }
+
+cpp.program{'cruise_demo',
+	inputs = { sm, gui },
+	libs = LIBS
+}

@@ -1,0 +1,203 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0308
+header_name {.h}
+code_name {.cpp}
+comment {// demo application} {in_source in_header
+}
+
+decl {\#include "cruise_io.h"} {private global
+}
+
+decl {\#define MAX_ERPM  2500} {private local
+}
+
+decl {\#define LOW_IDLE_ERPM  1000} {private local
+}
+
+class CruiseControlUI {
+  comment {Adaptive cruise control user interface} open
+} {
+  Function {CruiseControlUI()} {
+    comment constructor open
+  } {
+    Fl_Window mainWindow {
+      label {Adaptive Cruise Control Demo} open
+      private xywh {378 165 617 509} type Double visible
+    } {
+      Fl_Dial vehicle_speed {
+        label kph
+        callback {vehicle_speed_output->value((o->value()));
+actual_kph = o->value();}
+        private xywh {35 25 135 135} type Line align 18 maximum 200 step 1
+      }
+      Fl_Value_Output vehicle_speed_output {
+        label {Speed Sensor (kph)}
+        private xywh {75 166 55 24} color 10 align 8 maximum 200
+      }
+      Fl_Value_Slider distance {
+        label {Distance (m)}
+        callback {actual_distance = o->value();}
+        private xywh {200 35 220 25} type Horizontal color 10 maximum 100 step 1 value 25 textsize 14
+      }
+      Fl_Light_Button enable {
+        label Enable
+        callback {enable_button = o->value();}
+        private xywh {30 245 70 25}
+      }
+      Fl_Light_Button {} {
+        label {Set/Decrease}
+        callback {set_decrease_button = o->value();}
+        private xywh {105 245 130 25} selection_color 4
+      }
+      Fl_Light_Button {} {
+        label {Resume/Increase}
+        callback {resume_increase_button = o->value();}
+        private xywh {105 275 130 25} selection_color 4
+      }
+      Fl_Light_Button {} {
+        label {Brake Pedal}
+        callback {brake_button = o->value();}
+        private xywh {25 465 100 25}
+      }
+      Fl_Dial engine_speed {
+        label RPM
+        comment {Output parameter}
+        private xywh {450 25 135 135} type Line color 15 align 18 maximum 4500 step 1
+      }
+      Fl_Value_Output engine_speed_output {
+        label {Speed Sensor (rpm)}
+        private xywh {490 166 55 24} color 15 maximum 4500 step 1
+      }
+      Fl_Check_Button cc_status {
+        label {Cruise Control Status}
+        callback {if (o->value()) o->value(0);
+else o->value(1);}
+        comment {Status setting disabled in GUI}
+        private xywh {520 205 25 25} down_box DOWN_BOX color 3 align 4 when 1
+      }
+      Fl_Slider {} {
+        label Accelerator
+        callback {accelerator_pedal->value(o->value());
+accelerator = o->value();}
+        private xywh {265 245 25 225} type {Vert Knob} selection_color 1 maximum 100 step 1
+      }
+      Fl_Value_Output accelerator_pedal {
+        label {Percent (%)}
+        private xywh {300 356 40 24} color 10 align 8 maximum 200
+      }
+      Fl_Value_Output speed_setting_ {
+        label {Speed Setting (kph)}
+        private xywh {180 306 55 24} color 10 maximum 200
+      }
+      Fl_Choice state {
+        label {Internal State}
+        comment {Shows state of FSM} open
+        private xywh {470 245 125 25} down_box BORDER_BOX
+      } {
+        MenuItem {} {
+          label Idle
+          private xywh {0 0 30 20}
+        }
+        MenuItem {} {
+          label Enabled
+          private xywh {0 0 30 20}
+        }
+        MenuItem {} {
+          label Init_Speed
+          private xywh {0 0 30 20}
+        }
+        MenuItem {} {
+          label steady
+          private xywh {0 0 30 20}
+        }
+        MenuItem {} {
+          label increasing_dist
+          private xywh {0 0 30 20}
+        }
+        MenuItem {} {
+          label decreasing_dist
+          private xywh {10 10 30 20}
+        }
+        MenuItem {} {
+          label increasing_speed
+          private xywh {20 20 30 20}
+        }
+        MenuItem {} {
+          label reducing_speed
+          private xywh {10 10 30 20}
+        }
+        MenuItem {} {
+          label resume_ready
+          private xywh {10 10 30 20}
+        }
+        MenuItem {} {
+          label resume_speed
+          private xywh {20 20 30 20}
+        }
+        MenuItem {} {
+          label no_resume selected
+          private xywh {30 30 30 20}
+        }
+      }
+      Fl_Value_Output distance_setting_ {
+        label {Distance Setting (m)}
+        private xywh {180 411 55 24} color 10 maximum 200 value 25
+      }
+      Fl_Light_Button {} {
+        label Decrease
+        callback {decrease_distance_button = o->value();}
+        private tooltip {Reduce following distance} xywh {105 350 130 25} selection_color 4
+      }
+      Fl_Light_Button {} {
+        label Increase
+        callback {increase_distance_button = o->value();}
+        private tooltip {Increase following distance} xywh {105 380 130 25} selection_color 4
+      }
+    }
+  }
+  Function {show(int argc, char** argv)} {
+    comment {display user interface} open
+  } {
+    code {mainWindow->show(argc, argv);
+init_io();} {}
+  }
+  Function {set_engine_speed(int rpm)} {
+    comment {Set output engine speed command.}
+  } {
+    code {// Set output widget values
+engine_speed->value(rpm);
+engine_speed_output->value(rpm);} {}
+  }
+  Function {set_cruise_control(int status)} {
+    comment {Set output cruise control status}
+  } {
+    code {cc_status->value(status);} {}
+  }
+  Function {update()} {
+    comment {results of state machine} open
+  } {
+    code {state->value(internal_state);
+speed_setting_->value(speed_setting);
+cc_status->value(cruise_status);
+distance_setting_->value(distance_setting);
+engine_speed->value(engine_speed_cmd());
+engine_speed_output->value(engine_speed_cmd());} {}
+  }
+  Function {engine_speed_cmd()} {
+    comment {Calculate engine speed command} private return_type int
+  } {
+    code {// Choose accelerator (cruise vs. manual)
+int percent = accelerator_pedal->value();
+if (cc_status->value() && cruise_accelerator > percent)
+{
+percent = cruise_accelerator;    
+}
+
+return (percent * (MAX_ERPM - LOW_IDLE_ERPM)/100) + LOW_IDLE_ERPM;} {}
+  }
+  Function {init_io()} {open private
+  } {
+    code {actual_distance = distance->value();
+actual_kph = vehicle_speed->value();} {}
+  }
+}
