@@ -624,3 +624,74 @@ The text, "internals": "This is my variable", should be contained in the JSON fi
 The text, "dependencies": "#include \"interface.h\"", should be contained in the JSON file.
 
 ---
+
+| Test Case 41 | |
+| --- | --- |
+| Brief description | User is provided opportunity to cancel application exit |
+| Reason for test | Check that dialog appears and the user may cancel if changes have not been saved. |
+| Type | **User Acceptance** |
+| Map to user story | [KAN-26 Unsaved changes](https://jde-psu.atlassian.net/browse/KAN-26) |
+#### Steps
+1. Open application.
+2. Add two states and one transition.
+3. Select "Exit" on the menu
+4. When/if the dialog appears select "Cancel" on the dialog.
+
+#### Expected results
+Dialog appears when the user selects "Exit" and the application remains active after the user cancels. The dialog closes.
+
+---
+
+| Test Case 42 | |
+| --- | --- |
+| Brief description | User is provided opportunity to cancel application exit |
+| Reason for test | Check that dialog appears and the user may save changes. |
+| Type | **User Acceptance** |
+| Map to user story | [KAN-26 Unsaved changes](https://jde-psu.atlassian.net/browse/KAN-26) |
+#### Steps
+1. Open application.
+2. Add two states and one transition.
+3. Select "Exit" on the menu.
+4. When/if the dialog appears select "Save File" on the dialog.
+5. When/if the file save dialog appears, save the file as tc42.json.
+
+#### Expected results
+Dialog appears when the user selects "Exit". The file tc42.json exists on the system and contains the state and transition data. 
+
+---
+
+| Test Case 43 | |
+| --- | --- |
+| Brief description | User is not provided opportunity to cancel application exit if there are not unsaved changes  |
+| Reason for test | Check that dialog does not appear. |
+| Type | **User Acceptance** |
+| Map to user story | [KAN-26 Unsaved changes](https://jde-psu.atlassian.net/browse/KAN-26) |
+#### Steps
+1. Open application.
+2. Open existing valid file (The file from test case 42, tc42.json, could be used).
+3. Select "Exit" on the menu.
+
+#### Expected results
+Application exits normally with no dialog appearing. 
+
+---
+
+| Test Case 44 | |
+| --- | --- |
+| Brief description | User is provided opportunity to cancel application exit  |
+| Reason for test | Check that user can choose to lose changes. |
+| Type | **User Acceptance** |
+| Map to user story | [KAN-26 Unsaved changes](https://jde-psu.atlassian.net/browse/KAN-26) |
+#### Steps
+1. Open application.
+2. Open existing valid file (The file from test case 42, tc42.json, could be used).
+3. Use the "Save As" menu command to save the file under a new name.
+4. Resize one of the states.
+5. Select "Exit" on the menu.
+6. When/if dialog appears, select "Lose changes".
+
+#### Expected results
+Application exits. The original file from step 2 is identical to the new file created in step 3. (This can be checked quickly with a file compare tool like "fc" or "diff")
+
+---
+
