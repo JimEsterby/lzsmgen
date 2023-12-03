@@ -241,8 +241,28 @@ void Viewer::cb_Delete_i(Fl_Menu_*, void*)
     }
 }
 
-void Viewer::cb_GenCode_i(Fl_Menu_*, void*)
+void Viewer::cb_GenCode_i(Fl_Menu_* menu, void* data)
 {
+    if (editor->changed())
+    {
+        if (fl_choice("Diagram is not saved. Save diagram?",
+                      "Don't save",
+                      "Save",
+                      0))
+        {
+            cb_Save_i(menu, data);
+        }
+        else
+        {
+            if (!file_callback->loaded())
+            {
+                fl_alert("Can not generate code without file name.\n"
+                         "Recommend saving diagram.");
+                return;
+            }
+        }
+    }
+
     if (file_callback->generate_code("c"))
     {
         fl_alert("Generated %s.c and %s.h.",
